@@ -20,6 +20,9 @@ jobs:
       - name: Test Print
         run: echo "这是一个自定义环境变量 ${{secrets.MY_TEST}}"
 
+      - name: Test Print Undefined
+        run: echo "这是一个自定义环境变量 ${{secrets.HHHH}}"
+
       - name: Check out code
         uses: actions/checkout@v2
 
