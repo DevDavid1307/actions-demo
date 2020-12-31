@@ -17,6 +17,9 @@ jobs:
         with:
           go-version: ^1.15
 
+      - name: Test Print
+        run: echo "这是一个自定义环境变量 ${{secrets.MY_TEST}}"
+
       - name: Check out code
         uses: actions/checkout@v2
 
