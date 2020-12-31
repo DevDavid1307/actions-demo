@@ -30,6 +30,9 @@ jobs:
         run: go test ./...
 
       - name: Test Coverage
+        uses: codecov/codecov-action@v1
+        with:
+          file: ./c.out
         run: |
           go test -coverprofile=c.out
           bash <(curl -s https://codecov.io/bash) -Z -f c.out
