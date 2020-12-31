@@ -9,6 +9,8 @@ jobs:
   github_context:
     runs-on: ubuntu-latest
     steps:
-      - name: Print
+      - name: actor
         run: echo ${{github.actor}}
+      - name: event name
+        run: echo ${{github.event_name}}
 
