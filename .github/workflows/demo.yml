@@ -39,5 +39,5 @@ jobs:
     needs:
       - code_format
     steps:
-      - if: contains( github.event.pull_request.labels.*.name, ${{ matrix.module }})
+      - if: contains( github.event.pull_request.labels.*.name, '${{ matrix.module }}')
         run: echo 这里是${{ matrix.module }}模块的测试
