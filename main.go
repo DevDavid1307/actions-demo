@@ -20,3 +20,7 @@ func Demo(a, b int) (int, error) {
 func Haha() {
 	fmt.Println(123)
 }
+
+func AA() {
+	fmt.Println(111)
+}
