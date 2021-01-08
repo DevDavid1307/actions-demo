@@ -32,3 +32,7 @@ func BB() {
 func DD() {
 	fmt.Println(44)
 }
+
+func EE() {
+	fmt.Println(55)
+}
