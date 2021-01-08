@@ -6,13 +6,26 @@ on:
       - opened
 
 jobs:
-  Campfire:
+  verify_label:
+    name: Label检测
+    runs-on: ubuntu-latest
+    steps:
+      - uses: jesusvasquez333/verify-pr-label-action@v1.3.1
+        with:
+          github-token: '${{ secrets.GITHUB_TOKEN }}'
+          valid-labels: 'campfire, drive'
+          pull-request-number: '${{ github.event.pull_request.number }}'
+  campfire:
     runs-on: ubuntu-latest
     if: contains( github.event.pull_request.labels.*.name, 'campfire')
+    needs:
+      - VerifyLabel
     steps:
       - run: echo 这里是Campfire模块
-  Drive:
+  drive:
     runs-on: ubuntu-latest
     if: contains( github.event.pull_request.labels.*.name, 'drive')
+    needs:
+      - VerifyLabel
     steps:
       - run: echo 这里是Drive模块测试
