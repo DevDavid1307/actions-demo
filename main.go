@@ -28,3 +28,7 @@ func AA() {
 func BB() {
 	fmt.Println(222)
 }
+
+func CC() {
+	fmt.Println(333)
+}
