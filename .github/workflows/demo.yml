@@ -1,13 +1,14 @@
 name: Test Context
 
 on:
-  push:
-    branches:
-      - develop
+  pull_request:
+    types:
+      - opened
 
 jobs:
   github_context:
     runs-on: ubuntu-latest
+    if: contains( github.event.pull_request.labels.*.name, 'campfire')
     steps:
       - name: actor
         run: echo ${{github.actor}}
