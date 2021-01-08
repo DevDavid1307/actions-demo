@@ -10,7 +10,7 @@ on:
       - unlabeled
 
 jobs:
-  verify_label:
+  check_label:
     name: Label检测
     runs-on: ubuntu-latest
     steps:
@@ -19,17 +19,22 @@ jobs:
           github-token: '${{ secrets.GITHUB_TOKEN }}'
           valid-labels: 'campfire, drive'
           pull-request-number: '${{ github.event.pull_request.number }}'
-  campfire:
+  code_format:
+    name: 代码格式化
     runs-on: ubuntu-latest
-    if: contains( github.event.pull_request.labels.*.name, 'campfire')
-    needs:
-      - verify_label
-    steps:
-      - run: echo 这里是Campfire模块
-  drive:
+  unit_test:
+    name: ${{ matrix.module }}模块单元测试
     runs-on: ubuntu-latest
-    if: contains( github.event.pull_request.labels.*.name, 'drive')
+    strategy:
+      max-parallel: 5
+      matrix:
+        module: [
+            'campfire',
+            'drive'
+        ]
+    if: contains( github.event.pull_request.labels.*.name, ${{ matrix.module }})
     needs:
-      - verify_label
+      - check_label
+      - code_format
     steps:
-      - run: echo 这里是Drive模块测试
+      - run: echo 这里是${{ matrix.module }}模块的测试
