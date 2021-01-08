@@ -24,3 +24,7 @@ func Haha() {
 func AA() {
 	fmt.Println(111)
 }
+
+func BB() {
+	fmt.Println(222)
+}
