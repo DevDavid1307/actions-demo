@@ -13,9 +13,12 @@ jobs:
   check_label:
     name: Label检测
     runs-on: ubuntu-latest
-    if: contains(github.event.pull_request.labels.*.name, 'campfire_unit_test') || contains(github.event.pull_request.labels.*.name, 'campfire_function_test')
     steps:
-      - run: echo 这里是Label检测
+      - uses: jesusvasquez333/verify-pr-label-action@v1.3.1
+        with:
+          github-token: '${{ secrets.GITHUB_TOKEN }}'
+          valid-labels: 'campfire_unit_test, campfire_function_test'
+          pull-request-number: '${{ github.event.pull_request.number }}'
   code_format:
     name: 代码格式化
     runs-on: ubuntu-latest
