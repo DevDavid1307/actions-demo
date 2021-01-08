@@ -10,9 +10,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - if: contains( github.event.pull_request.labels.*.name, 'campfire')
-      - run: echo 这里是Campfire模块
+      run: echo 这里是Campfire模块
   Drive:
     runs-on: ubuntu-latest
     steps:
       - if: contains( github.event.pull_request.labels.*.name, 'drive')
-      - run: echo 这里是Drive模块测试
+      run: echo 这里是Drive模块测试
