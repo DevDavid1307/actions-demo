@@ -8,10 +8,11 @@ on:
 jobs:
   github_context:
     runs-on: ubuntu-latest
-    if: contains( github.event.pull_request.labels.*.name, 'campfire')
     steps:
-      - name: actor
-        run: echo ${{github.actor}}
-      - name: event name
-        run: echo ${{github.event_name}}
+      - name: Campfire模块
+        if: contains( github.event.pull_request.labels.*.name, 'campfire')
+        run: echo 这里是Campfire模块
+      - name: Drive模块
+        if: contains( github.event.pull_request.labels.*.name, 'drive')
+        run: echo Drive模块
 
