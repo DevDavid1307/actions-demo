@@ -1,4 +1,4 @@
-name: Test Context
+name: 单元测试
 
 on:
   pull_request:
@@ -6,13 +6,13 @@ on:
       - opened
 
 jobs:
-  github_context:
+  Campfire:
     runs-on: ubuntu-latest
     steps:
-      - name: Campfire模块
-        if: contains( github.event.pull_request.labels.*.name, 'campfire')
-        run: echo 这里是Campfire模块
-      - name: Drive模块
-        if: contains( github.event.pull_request.labels.*.name, 'drive')
-        run: echo Drive模块
-
+      - if: contains( github.event.pull_request.labels.*.name, 'campfire')
+      - run: echo 这里是Campfire模块
+  Drive:
+    runs-on: ubuntu-latest
+    steps:
+      - if: contains( github.event.pull_request.labels.*.name, 'drive')
+      - run: echo 这里是Drive模块测试
