@@ -19,13 +19,13 @@ jobs:
     runs-on: ubuntu-latest
     if: contains( github.event.pull_request.labels.*.name, 'campfire')
     needs:
-      - VerifyLabel
+      - verify_label
     steps:
       - run: echo 这里是Campfire模块
   drive:
     runs-on: ubuntu-latest
     if: contains( github.event.pull_request.labels.*.name, 'drive')
     needs:
-      - VerifyLabel
+      - verify_label
     steps:
       - run: echo 这里是Drive模块测试
