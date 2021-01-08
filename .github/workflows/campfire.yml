@@ -33,7 +33,7 @@ jobs:
   unit_test:
     name: 单元测试
     runs-on: ubuntu-latest
-    if: contains(github.event.pull_request.labels.*.name, $LABEL_UNIT)
+    if: contains(github.event.pull_request.labels.*.name, LABEL_UNIT)
     needs:
       - code_format
     steps:
@@ -41,7 +41,7 @@ jobs:
   function_test:
     name: 功能测试
     runs-on: ubuntu-latest
-    if: contains(github.event.pull_request.labels.*.name, $LABEL_FUNC)
+    if: contains(github.event.pull_request.labels.*.name, LABEL_FUNC)
     needs:
       - code_format
     steps:
