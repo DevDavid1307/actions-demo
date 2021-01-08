@@ -9,6 +9,10 @@ on:
       - labeled
       - unlabeled
 
+env:
+  LABEL_UNIT: campfire_unit_test
+  LABEL_FUNC: campfire_function_test
+
 jobs:
   check_label:
     name: Label检测
@@ -17,7 +21,7 @@ jobs:
       - uses: jesusvasquez333/verify-pr-label-action@v1.3.1
         with:
           github-token: '${{ secrets.GITHUB_TOKEN }}'
-          valid-labels: 'campfire_unit_test, campfire_function_test'
+          valid-labels: '$LABEL_UNIT, $LABEL_FUNC'
           pull-request-number: '${{ github.event.pull_request.number }}'
   code_format:
     name: 代码格式化
@@ -29,7 +33,7 @@ jobs:
   unit_test:
     name: 单元测试
     runs-on: ubuntu-latest
-    if: contains(github.event.pull_request.labels.*.name, 'campfire_unit_test')
+    if: contains(github.event.pull_request.labels.*.name, $LABEL_UNIT)
     needs:
       - code_format
     steps:
@@ -37,7 +41,7 @@ jobs:
   function_test:
     name: 功能测试
     runs-on: ubuntu-latest
-    if: contains(github.event.pull_request.labels.*.name, 'campfire_function_test')
+    if: contains(github.event.pull_request.labels.*.name, $LABEL_FUNC)
     needs:
       - code_format
     steps:
@@ -45,7 +49,7 @@ jobs:
   union_test:
     name: 联合测试
     runs-on: ubuntu-latest
-    if: contains(github.event.pull_request.labels.*.name, 'campfire_unit_test') && contains(github.event.pull_request.labels.*.name, 'campfire_function_test')
+    if: contains(github.event.pull_request.labels.*.name, LABEL_UNIT) && contains(github.event.pull_request.labels.*.name, LABEL_FUNC)
     needs:
       - code_format
     steps:
