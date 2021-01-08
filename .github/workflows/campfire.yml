@@ -42,7 +42,7 @@ jobs:
   union_test:
     name: 联合测试
     runs-on: ubuntu-latest
-    if: contains(github.event.pull_request.labels.*.name, 'campfire_unit_test') || contains(github.event.pull_request.labels.*.name, 'campfire_function_test')
+    if: contains(github.event.pull_request.labels.*.name, 'campfire_unit_test') && contains(github.event.pull_request.labels.*.name, 'campfire_function_test')
     needs:
       - code_format
     steps:
