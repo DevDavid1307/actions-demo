@@ -22,6 +22,10 @@ jobs:
   code_format:
     name: 代码格式化
     runs-on: ubuntu-latest
+    needs:
+      - check_label
+    steps:
+      - run: echo 这里是代码格式化
   unit_test:
     name: ${{ matrix.module }}模块单元测试
     runs-on: ubuntu-latest
@@ -34,7 +38,6 @@ jobs:
         ]
     if: contains( github.event.pull_request.labels.*.name, ${{ matrix.module }})
     needs:
-      - check_label
       - code_format
     steps:
       - run: echo 这里是${{ matrix.module }}模块的测试
