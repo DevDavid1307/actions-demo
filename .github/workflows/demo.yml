@@ -40,4 +40,4 @@ jobs:
       - code_format
     steps:
       - if: contains(github.event.pull_request.labels.*.name, matrix.module)
-        run: echo 这里是${{ matrix.module }}模块的测试-${{ github.event.pull_request.labels.*.name }}
+        run: echo 这里是${{ matrix.module }}模块的测试 - ${{ github.event.pull_request.labels }}
