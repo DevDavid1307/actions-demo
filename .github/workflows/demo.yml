@@ -35,6 +35,7 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - parent
+      - hello_world_job
     steps:
       - name: Print ${{ env.NAME }}
-        run: echo 123 ${{ job.status }} - ${{ runner.os }} - ${{ needs.parent.result}}
+        run: echo 123 ${{ job.status }} - ${{ runner.os }} - ${{ needs.parent.result}} - ${{ needs.hello_world_job.outputs.time }}
