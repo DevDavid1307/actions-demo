@@ -11,6 +11,8 @@ env:
 jobs:
   parent:
     runs-on: ubuntu-latest
+    steps:
+      - run: echo parent
     outputs:
       result: parent
   test:
