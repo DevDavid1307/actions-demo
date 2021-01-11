@@ -27,4 +27,4 @@ jobs:
       - hello_world_job
     steps:
       - name: Print ${{ env.NAME }}
-        run: echo 123 ${{ job.status }} - ${{ runner.os }} - ${{ needs.hello_world_job.outputs.time }}
+        run: echo 123 ${{ job.status }} - ${{ runner.os }} - ${{ needs.hello_world_job.steps.hello.outputs.time }}
