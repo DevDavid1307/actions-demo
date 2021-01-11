@@ -13,4 +13,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Print ${{ env.NAME }}
-        run: echo 123 ${{ job.container.id }}
+        run: echo 123 ${{ job.status }}
