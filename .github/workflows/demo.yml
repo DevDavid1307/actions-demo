@@ -13,4 +13,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Print ${{ env.NAME }}
-        run: echo 123 ${{ job.status }}
+        run: echo 123 ${{ job.status }} - ${{ runner.os }}
