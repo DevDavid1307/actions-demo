@@ -15,4 +15,4 @@ jobs:
       NAME: world
     steps:
       - name: Print ${ env.NAME }
-        run: echo 123
+        run: echo 123 ${ job.container.id }
