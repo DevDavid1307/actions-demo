@@ -12,5 +12,5 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - name: Print ${ env.NAME }
+      - name: Print ${ NAME }
         run: echo 123
