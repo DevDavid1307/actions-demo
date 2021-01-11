@@ -11,8 +11,6 @@ env:
 jobs:
   test:
     runs-on: ubuntu-latest
-    env:
-      NAME: world
     steps:
-      - name: Print ${ env.NAME }
-        run: echo 123 ${ job.container.id }
+      - name: Print ${{ env.NAME }}
+        run: echo 123 ${{ job.container.id }}
