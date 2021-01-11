@@ -13,6 +13,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: echo parent
+        uses: jesusvasquez333/verify-pr-label-action@v1.3.1
+        with:
+          github-token: '${{ secrets.GITHUB_TOKEN }}'
+          valid-labels: 'bug, enhancement'
     outputs:
       result: parent
   test:
@@ -21,4 +25,4 @@ jobs:
       - parent
     steps:
       - name: Print ${{ env.NAME }}
-        run: echo 123 ${{ job.status }} - ${{ runner.os }} - ${{ needs.parent.outputs.result}}
+        run: echo 123 ${{ job.status }} - ${{ runner.os }} - ${{ needs.parent.result}}
