@@ -9,8 +9,14 @@ env:
   NAME: hello
 
 jobs:
+  parent:
+    runs-on: ubuntu-latest
+    outputs:
+      result: parent
   test:
     runs-on: ubuntu-latest
+    needs:
+      - parent
     steps:
       - name: Print ${{ env.NAME }}
-        run: echo 123 ${{ job.status }} - ${{ runner.os }}
+        run: echo 123 ${{ job.status }} - ${{ runner.os }} - ${{ needs.parent.outputs.result}}
