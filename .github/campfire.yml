@@ -39,7 +39,7 @@ jobs:
     steps:
       - run: echo 运行了单元测试
   function_test:
-    name: 功能测试
+    name: 集成测试
     runs-on: ubuntu-latest
     if: contains(github.event.pull_request.labels.*.name, ${LABEL_FUNC})
     needs:

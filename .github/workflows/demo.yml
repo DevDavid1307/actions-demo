@@ -1,0 +1,16 @@
+name: Demo
+
+on:
+  push:
+    branches:
+      - demo
+
+env:
+  NAME: hello
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print
+        run: echo ${env.NAME}
