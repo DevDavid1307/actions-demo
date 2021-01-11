@@ -14,5 +14,5 @@ jobs:
     env:
       NAME: world
     steps:
-      - name: Print $NAME
+      - name: Print ${ env.NAME }
         run: echo 123
