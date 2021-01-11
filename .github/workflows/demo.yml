@@ -9,6 +9,18 @@ env:
   NAME: hello
 
 jobs:
+  hello_world_job:
+    runs-on: ubuntu-latest
+    name: A job to say hello
+    steps:
+      - name: Hello World action step
+        id: hello
+        uses: DevDavid1307/hello-world-javascript-action@v1
+        with:
+          who-to-greet: 'david'
+      # Use the output from the `hello` step
+      - name: Get the output time
+        run: echo "The time was ${{ steps.hello.outputs.time }}"
   parent:
     runs-on: ubuntu-latest
     steps:
