@@ -13,22 +13,36 @@ env:
   NAME: hello
 
 jobs:
-  hello_world_job:
+  verify_label:
     runs-on: ubuntu-latest
-    name: A job to say hello
+    name: 标签检测
     steps:
-      - name: Hello World action step
+      - name: 检测是否包含模块标签
         id: hello
         uses: DevDavid1307/hello-world-javascript-action@v1.9.9
         with:
-          include: 'campfire, drive'
-      - name: Get the output time
-        run: echo "The time was ${{ steps.hello.outputs.time }}"
-  test:
+          include: ${{ secrets.GITHUB_TOKEN }}
+  campfire:
     runs-on: ubuntu-latest
-    if: ${{ needs.hello_world_job.result }} == 'success'
     needs:
-      - hello_world_job
+      - verify_label
+    if: contains(github.event.pull_request.labels.*.name, 'campfire')
     steps:
-      - name: Print ${{ env.NAME }}
-        run: echo 123 ${{ job.status }} - ${{ runner.os }} - ${{ needs.hello_world_job.result }}
+      - name: Campfire模块单元测试
+        run: echo 这里是单元测试
+  drive:
+    runs-on: ubuntu-latest
+    needs:
+      - verify_label
+    if: contains(github.event.pull_request.labels.*.name, 'drive')
+    steps:
+      - name: Drive模块单元测试
+        run: echo 这里是单元测试
+  event:
+    runs-on: ubuntu-latest
+    needs:
+      - verify_label
+    if: contains(github.event.pull_request.labels.*.name, 'event')
+    steps:
+      - name: Event模块单元测试
+        run: echo 这里是单元测试
