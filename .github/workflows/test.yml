@@ -5,7 +5,6 @@ on: push
 env:
   hello: campfire
   include: ams
-  temp: ${{include}}
 
 jobs:
   demo:
@@ -14,4 +13,4 @@ jobs:
     steps:
       - name: 打印分支
         if: contains(env.hello, env.include)
-        run: echo ${{ github.ref }} - ${{ env.hello }} - ${{ env.temp }}
+        run: echo ${{ github.ref }} - ${{ env.hello }}
