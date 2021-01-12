@@ -1,0 +1,11 @@
+name: 测试
+
+on: push
+
+jobs:
+  demo:
+    runs-on: ubuntu-latest
+    name: 测试
+    steps:
+      - name: 打印分支
+        run: echo ${{ github.ref }}
