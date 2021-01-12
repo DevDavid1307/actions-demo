@@ -45,4 +45,4 @@ jobs:
       - unit_test
     steps:
       - name: 代码格式化
-        run: 这里是代码格式化
+        run: echo 这里是代码格式化
