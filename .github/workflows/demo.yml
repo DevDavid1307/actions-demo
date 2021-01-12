@@ -19,7 +19,7 @@ jobs:
     steps:
       - name: 检测是否包含模块标签
         id: hello
-        uses: DevDavid1307/hello-world-javascript-action@v1.9.9
+        uses: DevDavid1307/hello-world-javascript-action@v2.0.0
         with:
           modules: ${{ secrets.MODULES}}
   campfire:
