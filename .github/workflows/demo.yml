@@ -3,7 +3,7 @@ name: Demo
 on:
   pull_request:
     branches:
-      - develope
+      - develop
 
 env:
   NAME: hello
