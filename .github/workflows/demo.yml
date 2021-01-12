@@ -10,7 +10,10 @@ on:
       - develop
 
 env:
-  NAME: hello
+  MODULES: campfire,drive,event
+  CAMPFIRE: campfire
+  DRIVE: drive
+  EVENT: event
 
 jobs:
   verify_label:
@@ -21,7 +24,7 @@ jobs:
         id: hello
         uses: DevDavid1307/hello-world-javascript-action@v2.0.2
         with:
-          modules: ${{ secrets.MODULES}}
+          modules: ${{ env.MODULES}}
   unit_test:
     runs-on: ubuntu-latest
     name: 单元测试
@@ -44,10 +47,6 @@ jobs:
       - verify_label
       - unit_test
     steps:
-      - name: 检出分支
-        uses: actions/checkout@v2
-        with:
-          ref: ''
       - name: 代码格式化
         run: echo 这里是代码格式化
       - name: 提交格式化后的代码
