@@ -14,3 +14,9 @@ jobs:
       - name: 打印分支
         if: contains(env.hello, env.include)
         run: echo ${{ github.ref }} - ${{ env.hello }}
+      - name: check composer version
+        run: composer -V
+      - name: check php version
+        run: php -v
+      - name: check phpunit version
+        run: phpunit --version

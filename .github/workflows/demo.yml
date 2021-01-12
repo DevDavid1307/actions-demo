@@ -31,6 +31,12 @@ jobs:
     needs:
       - verify_label
     steps:
+      - uses: actions/checkout@v2 # 拉取pr的分支
+        with:
+          ref: ${{ github.ref }}
+      - uses: actions/composer@v2 # composer
+      - uses: actions/phpunit@v2 # phpunit
+
       - name: Campfire模块
         if: contains(github.event.pull_request.labels.*.name, env.CAMPFIRE)
         run: echo Campfire单元测试
