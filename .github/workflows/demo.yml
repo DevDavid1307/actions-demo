@@ -1,6 +1,9 @@
 name: Demo
 
 on:
+  push:
+    branches:
+      - develop
   pull_request:
     types:
       - opened
@@ -19,7 +22,7 @@ jobs:
     steps:
       - name: Hello World action step
         id: hello
-        uses: DevDavid1307/hello-world-javascript-action@v1.9.2
+        uses: DevDavid1307/hello-world-javascript-action@v1.9.4
         with:
           who-to-greet: 'haha'
       # Use the output from the `hello` step
