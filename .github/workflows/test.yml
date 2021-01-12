@@ -4,7 +4,7 @@ on: push
 
 env:
   hello: campfire
-  include: am
+  include: ams
 
 jobs:
   demo:
