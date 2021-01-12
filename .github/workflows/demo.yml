@@ -19,7 +19,7 @@ jobs:
     steps:
       - name: Hello World action step
         id: hello
-        uses: DevDavid1307/hello-world-javascript-action@v1.9.8
+        uses: DevDavid1307/hello-world-javascript-action@v1.9.9
         with:
           include: 'campfire, drive'
       - name: Get the output time
