@@ -32,13 +32,13 @@ jobs:
       - verify_label
     steps:
       - name: Campfire模块
-        if: contains(github.event.pull_request.labels.*.name, 'campfire')
+        if: contains(github.event.pull_request.labels.*.name, env.CAMPFIRE)
         run: echo Campfire单元测试
       - name: Drive模块
-        if: contains(github.event.pull_request.labels.*.name, 'drive')
+        if: contains(github.event.pull_request.labels.*.name, env.DRIVE)
         run: echo Campfire单元测试
       - name: Event模块
-        if: contains(github.event.pull_request.labels.*.name, 'event')
+        if: contains(github.event.pull_request.labels.*.name, env.EVENT)
         run: echo Campfire单元测试
   code_beauty:
     runs-on: ubuntu-latest
