@@ -21,7 +21,7 @@ jobs:
         id: hello
         uses: DevDavid1307/hello-world-javascript-action@v1.9.9
         with:
-          include: ${{ secrets.GITHUB_TOKEN }}
+          modules: ${{ secrets.MODULES}}
   campfire:
     runs-on: ubuntu-latest
     needs:
