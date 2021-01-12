@@ -5,7 +5,7 @@ on: push
 env:
   hello: campfire
   include: ams
-  temp: ${{env.include}}
+  temp: ${{include}}
 
 jobs:
   demo:
