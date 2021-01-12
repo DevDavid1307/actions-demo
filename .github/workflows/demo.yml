@@ -22,27 +22,24 @@ jobs:
         uses: DevDavid1307/hello-world-javascript-action@v2.0.2
         with:
           modules: ${{ secrets.MODULES}}
-  campfire:
+  unit_test:
     runs-on: ubuntu-latest
+    name: 单元测试
     needs:
       - verify_label
-    if: contains(github.event.pull_request.labels.*.name, 'campfire')
     steps:
-      - name: Campfire模块单元测试
-        run: echo 这里是单元测试
-  drive:
+      - name: Campfire模块
+        if: contains(github.event.pull_request.labels.*.name, 'campfire')
+        run: echo Campfire单元测试
+      - name: Drive模块
+        if: contains(github.event.pull_request.labels.*.name, 'drive')
+        run: echo Campfire单元测试
+      - name: Event模块
+        if: contains(github.event.pull_request.labels.*.name, 'event')
+        run: echo Campfire单元测试
+  code_beauty:
     runs-on: ubuntu-latest
+    name: 代码格式化
     needs:
       - verify_label
-    if: contains(github.event.pull_request.labels.*.name, 'drive')
-    steps:
-      - name: Drive模块单元测试
-        run: echo 这里是单元测试
-  event:
-    runs-on: ubuntu-latest
-    needs:
-      - verify_label
-    if: contains(github.event.pull_request.labels.*.name, 'event')
-    steps:
-      - name: Event模块单元测试
-        run: echo 这里是单元测试
+      - unit_test
