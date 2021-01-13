@@ -22,9 +22,10 @@ jobs:
     steps:
       - name: 检测是否包含模块标签
         id: hello
-        uses: DevDavid1307/hello-world-javascript-action@v2.0.2
+        # uses: DevDavid1307/hello-world-javascript-action@v2.0.2
+        uses: ./.github/actions/verify-label
         with:
-          modules: ${{ env.MODULES}}
+          modules: ${{ env.MODULES }}
   unit_test:
     runs-on: ubuntu-latest
     name: 单元测试
@@ -34,9 +35,6 @@ jobs:
       - uses: actions/checkout@v2 # 拉取pr的分支
         with:
           ref: ${{ github.ref }}
-      - uses: actions/composer@v2 # composer
-      - uses: actions/phpunit@v2 # phpunit
-
       - name: Campfire模块
         if: contains(github.event.pull_request.labels.*.name, env.CAMPFIRE)
         run: echo Campfire单元测试
