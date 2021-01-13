@@ -8,7 +8,7 @@ env:
 
 jobs:
   demo:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     name: 测试
     steps:
       - name: 检出代码
@@ -22,6 +22,10 @@ jobs:
         run: composer -V
       - name: check php version
         run: php -v
+      - name: check pecl version
+        run: pecl version
+      - name: check pecl ext
+        run: pecl list
       - name: check phpunit version
         run: phpunit --version
       - name: php 扩展
