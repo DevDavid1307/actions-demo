@@ -11,6 +11,10 @@ jobs:
     runs-on: ubuntu-latest
     name: 测试
     steps:
+      - name: 检出代码
+        uses: actions/checkout@v2
+      - name: tree
+        run: tree
       - name: 打印分支
         if: contains(env.hello, env.include)
         run: echo ${{ github.ref }} - ${{ env.hello }}
