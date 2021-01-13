@@ -12,4 +12,5 @@ jobs:
       - name: 初始化环境
         run: |
           sudo pecl install psr
-          echo 安装完成
+          ini_dir=$(php --ini | grep "(php.ini)" | sed -e "s|.*: s*||")
+          echo 配置目录是: ini_dir
