@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    // 基本配置
+    "target": "es6",
+    "module": "commonjs",
+    "outDir": "./lib",
+    "rootDir": "./src",
+
+    // 类型检测配置
+    "strict": true,
+    "noImplicitAny": true,
+
+    "lib": ["es2015", "es2017"],
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "removeComments": false,
+    "preserveConstEnums": true
+  },
+  "exclude": ["node_modules", "lib"]
+}
