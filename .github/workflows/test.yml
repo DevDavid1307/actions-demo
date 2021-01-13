@@ -26,6 +26,8 @@ jobs:
         run: pecl version
       - name: check pecl ext
         run: pecl list
+      - name: install psr ext
+        run: pecl install psr
       - name: check phpunit version
         run: phpunit --version
       - name: php 扩展
