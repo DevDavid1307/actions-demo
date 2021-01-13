@@ -20,6 +20,10 @@ jobs:
     runs-on: ubuntu-latest
     name: 标签检测
     steps:
+      - name: 检出代码
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.ref }}
       - name: 检测是否包含模块标签
         id: hello
         # uses: DevDavid1307/hello-world-javascript-action@v2.0.2
