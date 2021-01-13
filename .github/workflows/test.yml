@@ -13,8 +13,8 @@ jobs:
     steps:
       - name: 检出代码
         uses: actions/checkout@v2
-      - name: tree
-        run: tree
+      - name: temp
+        run: pwd
       - name: 打印分支
         if: contains(env.hello, env.include)
         run: echo ${{ github.ref }} - ${{ env.hello }}
