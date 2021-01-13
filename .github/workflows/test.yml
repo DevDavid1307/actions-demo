@@ -13,22 +13,12 @@ jobs:
     steps:
       - name: 检出代码
         uses: actions/checkout@v2
-      - name: temp
-        run: pwd
-      - name: 打印分支
-        if: contains(env.hello, env.include)
-        run: echo ${{ github.ref }} - ${{ env.hello }}
-      - name: check composer version
-        run: composer -V
-      - name: check php version
+      - name: 准备php环境
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '7.4'
+          extensions: swoole, psr, redis
+          tools: php-cs-fixer, phpunit, composer:v2
+          coverage: xdebug
+      - name: php版本
         run: php -v
-      - name: check pecl version
-        run: pecl version
-      - name: check pecl ext
-        run: pecl list
-      - name: install psr ext
-        run: pecl install psr
-      - name: check phpunit version
-        run: phpunit --version
-      - name: php 扩展
-        run: php -m
