@@ -13,12 +13,5 @@ jobs:
     steps:
       - name: 检出代码
         uses: actions/checkout@v2
-      - name: 准备php环境
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '7.4'
-          extensions: swoole, psr, redis
-          tools: php-cs-fixer, phpunit, composer:v2
-          coverage: xdebug
-      - name: php版本
-        run: php -v
+      - name: 安装psr扩展
+        run: sudo pecl install psr
