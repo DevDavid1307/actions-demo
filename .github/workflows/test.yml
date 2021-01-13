@@ -12,6 +12,6 @@ jobs:
       - name: 初始化环境
         run: |
           sudo pecl install psr
-          echo extension=psr.so | tee -a $(php --ini | grep "(php.ini)" | sed -e "s|.*: s*||")/php.ini
+          echo extension=psr.so | sudo tee -a $(php --ini | grep "(php.ini)" | sed -e "s|.*: s*||")/php.ini
       - name: php扩展
         run: php -m
