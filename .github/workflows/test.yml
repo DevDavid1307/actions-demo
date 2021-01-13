@@ -20,3 +20,5 @@ jobs:
         run: php -v
       - name: check phpunit version
         run: phpunit --version
+      - name: php 扩展
+        run: php -m
