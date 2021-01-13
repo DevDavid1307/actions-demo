@@ -427,11 +427,16 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.setup = void 0;
 const core = __importStar(__nccwpck_require__(341));
+const utils = __importStar(__nccwpck_require__(839));
+const tools = __importStar(__nccwpck_require__(456));
 function setup() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const version = core.getInput('php-version');
-            console.log(version);
+            const os_version = process.platform;
+            const script = os_version + (yield utils.scriptExtension(os_version));
+            const location = yield getScript(script, version, os_version);
+            location;
         }
         catch (error) {
             core.setFailed(error.message);
@@ -439,7 +444,263 @@ function setup() {
     });
 }
 exports.setup = setup;
+function getScript(file_name, version, os_version) {
+    return __awaiter(this, void 0, void 0, function* () {
+        // const ext: string = 'psr'
+        // todo
+        version;
+        os_version;
+        const tools_csv = 'php-cs-fixer, composer:v2';
+        let script = yield utils.readScript(file_name);
+        script += yield tools.addTools(tools_csv, version, os_version);
+        return script;
+    });
+}
 setup();
+
+
+/***/ }),
+
+/***/ 456:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.getUri = exports.addArchive = exports.getComposerUrl = exports.parseToolVersion = exports.parseTool = exports.parseToolsToArr = exports.addTools = void 0;
+const utils = __importStar(__nccwpck_require__(839));
+/**
+ * 返回扩展安装命令，拼接到脚本中
+ *
+ * @param tools
+ * @param php_version
+ * @param os_version
+ */
+function addTools(tools, php_version, os_version) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let script = "";
+        const github = 'https://github.com/';
+        // todo
+        github;
+        php_version;
+        // 解析需要安装的工具
+        const toolsArr = yield parseToolsToArr(tools);
+        toolsArr.map(item => {
+            const toolData = parseTool(item);
+            const tool = toolData.name;
+            const version = toolData.version;
+            let url = '';
+            let uri = '';
+            switch (tool) {
+                case 'php-cs-fixer':
+                    uri = getUri(tool, '.phar', version, 'releases', 'v', 'download');
+                    url = github + 'FriendsOfPHP/PHP-CS-Fixer/' + uri;
+                    script += addArchive(tool, url, os_version, '"-V"') + "\n";
+                case 'compoer':
+                    url = getComposerUrl(version);
+                    script += addArchive('composer', url, os_version, version) + "\n";
+            }
+        });
+        console.log(script);
+        return script;
+    });
+}
+exports.addTools = addTools;
+function parseToolsToArr(tools) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const toolsArr = tools.split(',');
+        return toolsArr.map(tool => tool.trim());
+    });
+}
+exports.parseToolsToArr = parseToolsToArr;
+/**
+ * 版本解析
+ *
+ * @param tool
+ */
+function parseTool(tool) {
+    const parts = tool.split(':');
+    const name = parts[0];
+    const version = parts[1];
+    // 使用默认版本号
+    if (version == undefined) {
+        return { name: name, version: 'latest' };
+    }
+    return { name: name, version: parseToolVersion(version) };
+}
+exports.parseTool = parseTool;
+function parseToolVersion(version) {
+    // semver_regex - https://semver.org/
+    const semver_regex = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$/;
+    const composer_regex = /^stable$|^preview$|^snapshot$|^v?[1|2]$/;
+    version = version.replace(/[><=^]*/, '');
+    switch (true) {
+        case version.charAt(0) == 'v':
+            return version.replace('v', '');
+        case composer_regex.test(version):
+        case semver_regex.test(version):
+            return version;
+        default:
+            return 'latest';
+    }
+}
+exports.parseToolVersion = parseToolVersion;
+function getComposerUrl(version) {
+    let cache_url = `https://github.com/shivammathur/composer-cache/releases/latest/download/composer-${version.replace('latest', 'stable')}.phar`;
+    switch (true) {
+        case /^snapshot$/.test(version):
+            return `${cache_url},https://getcomposer.org/composer.phar`;
+        case /^preview$|^[1-2]$/.test(version):
+            return `${cache_url},https://getcomposer.org/composer-${version}.phar`;
+        case /^\d+\.\d+\.\d+[\w-]*$/.test(version):
+            cache_url = `https://github.com/composer/composer/releases/download/${version}/composer.phar`;
+            return `${cache_url},https://getcomposer.org/composer-${version}.phar`;
+        default:
+            return `${cache_url},https://getcomposer.org/composer-stable.phar`;
+    }
+}
+exports.getComposerUrl = getComposerUrl;
+function addArchive(tool, url, os_version, ver_param) {
+    return ((utils.getCommand(os_version, 'tool')) +
+        (utils.joins(url, tool, ver_param)));
+}
+exports.addArchive = addArchive;
+/**
+ * Function to get the url of tool with the given version
+ *
+ * @param tool
+ * @param extension
+ * @param version
+ * @param prefix
+ * @param version_prefix
+ * @param verb
+ */
+function getUri(tool, extension, version, prefix, version_prefix, verb) {
+    switch (version) {
+        case 'latest':
+            return [prefix, version, verb, tool + extension]
+                .filter(Boolean)
+                .join('/');
+        default:
+            return [prefix, verb, version_prefix + version, tool + extension]
+                .filter(Boolean)
+                .join('/');
+    }
+}
+exports.getUri = getUri;
+
+
+/***/ }),
+
+/***/ 839:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.joins = exports.getCommand = exports.scriptExtension = exports.readScript = void 0;
+const fs = __importStar(__nccwpck_require__(747));
+const path = __importStar(__nccwpck_require__(622));
+const core = __importStar(__nccwpck_require__(341));
+function readScript(file_name) {
+    return __awaiter(this, void 0, void 0, function* () {
+        return fs.readFileSync(path.join(__dirname, '../src/scripts/' + file_name), 'utf8');
+    });
+}
+exports.readScript = readScript;
+function scriptExtension(os_version) {
+    return __awaiter(this, void 0, void 0, function* () {
+        switch (os_version) {
+            case 'linux':
+                return '.sh';
+            default:
+                core.setFailed(`暂时不支持${os_version}`);
+                return "";
+        }
+    });
+}
+exports.scriptExtension = scriptExtension;
+/**
+ * Function to get command to setup tools
+ *
+ * @param os_version
+ * @param suffix
+ */
+function getCommand(os_version, suffix) {
+    switch (os_version) {
+        case 'linux':
+        case 'darwin':
+            return 'add_' + suffix + ' ';
+        case 'win32':
+            return 'Add-' + suffix.charAt(0).toUpperCase() + suffix.slice(1) + ' ';
+        default:
+            return '';
+    }
+}
+exports.getCommand = getCommand;
+/**
+ * Function to join strings with space
+ *
+ * @param str
+ */
+function joins(...str) {
+    return [...str].join(' ');
+}
+exports.joins = joins;
 
 
 /***/ }),

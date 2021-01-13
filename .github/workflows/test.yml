@@ -10,7 +10,6 @@ jobs:
       - name: 检出代码
         uses: actions/checkout@v2
       - name: 初始化环境
-        uses: ./.github/actions/setup-env
-        with:
-          php-version: 7.4
-          extensions: psr
+        run: |
+          sudo pecl install psr
+          echo 安装完成
