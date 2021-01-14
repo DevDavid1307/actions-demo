@@ -16,6 +16,7 @@ export bintray="https://dl.bintray/shivammathur"
 # Function to log start of a operation.
 step_log() {
   message=$1
+
   printf "\n\033[90;1m==> \033[0m\033[37;1m%s\033[0m\n" "$message"
 }
 
@@ -105,9 +106,12 @@ check_extension() {
 
 # Function to enable existing extensions.
 enable_extension() {
+  # 开启扩展
   if [ -e /tmp/setup_php_dismod ] && grep -q "$1" /tmp/setup_php_dismod; then
     sudo phpenmod -v "$version" "$1" >/dev/null 2>&1
   fi
+
+  # 写入php.ini
   if ! check_extension "$1" && [ -e "${ext_dir:?}/$1.so" ]; then
     echo "$2=${ext_dir:?}/$1.so" | sudo tee -a "${pecl_file:-${ini_file[@]}}" >/dev/null
   fi

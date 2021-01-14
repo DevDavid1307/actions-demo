@@ -1824,7 +1824,6 @@ async function run() {
     try {
         const version = await utils.parseVersion(await utils.getInput("php-version", true));
         const location = await getScript(version);
-        console.log(await utils.joins('bash', location, version, __dirname));
         // 运行脚本
         await exec_1.exec(await utils.joins('bash', location, version, __dirname));
     }
@@ -1844,6 +1843,7 @@ async function getScript(version) {
     let script = await utils.readScript(script_name);
     // 解析自定义的一些扩展和工具，追加到脚本中
     script += await customCmd(version);
+    console.log((script));
     // 把准备好的命令重新写回文件
     return await utils.writeScript(script_name, script);
 }

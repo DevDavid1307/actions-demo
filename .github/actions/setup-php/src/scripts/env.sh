@@ -253,12 +253,14 @@ link_pecl_file() {
 # Function to Setup PHP
 setup_php() {
   step_log "Setup PHP"
-  sudo mkdir -m 777 -p /var/run /run/php
+  sudo mkdir -m 777 -p /var/run /run/php # 创建php运行时目录
+
+  # 如果系统内置的php版本不等于需要的版本
   if [ "$(php-config --version 2>/dev/null | cut -c 1-3)" != "$version" ]; then
-    if [ ! -e "/usr/bin/php$version" ]; then
+    if [ ! -e "/usr/bin/php$version" ]; then # 如果系统中不存在需要的php版本，就add
       add_php >/dev/null 2>&1
     else
-      if [ "${update:?}" = "true" ]; then
+      if [ "${update:?}" = "true" ]; then # 如果需要更新php
         update_php >/dev/null 2>&1
       else
         status="Switched to"
@@ -267,28 +269,38 @@ setup_php() {
     if ! [[ "$version" =~ ${old_versions:?}|${nightly_versions:?} ]]; then
       switch_version >/dev/null 2>&1
     fi
-  else
+  else # 内置版本就是需要的，检测需不需要更新
     if [ "$update" = "true" ]; then
       update_php >/dev/null 2>&1
     else
       status="Found"
     fi
   fi
-  if ! command -v php"$version" >/dev/null; then
+
+  if ! command -v php"$version" >/dev/null; then # 错误处理
     add_log "$cross" "PHP" "Could not setup PHP $version"
     exit 1
   fi
-  semver=$(php_semver)
+
+  # 到这里，php就安装或者切换完成了
+  # 下面是一些配置
+
+  semver=$(php_semver) # 获取php版本
   ext_dir=$(php -i | grep "extension_dir => /" | sed -e "s|.*=> s*||")
   scan_dir=$(php --ini | grep additional | sed -e "s|.*: s*||")
   ini_dir=$(php --ini | grep "(php.ini)" | sed -e "s|.*: s*||")
   pecl_file="$scan_dir"/99-pecl.ini
+
+  # mapfile: 读取文件内容到数组
   mapfile -t ini_file < <(sudo find "$ini_dir/.." -name "php.ini" -exec readlink -m {} +)
+
   link_pecl_file
   configure_php
+
   sudo rm -rf /usr/local/bin/phpunit >/dev/null 2>&1
   sudo chmod 777 "${ini_file[@]}" "$pecl_file" "${tool_path_dir:?}"
   sudo cp "$dist"/../src/configs/*.json "$RUNNER_TOOL_CACHE/"
+
   add_log "${tick:?}" "PHP" "$status PHP $semver"
 }
 

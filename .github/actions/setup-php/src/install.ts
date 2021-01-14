@@ -17,8 +17,6 @@ export async function run(): Promise<void> {
 
         const location = await getScript(version);
 
-        console.log(await utils.joins('bash', location, version, __dirname))
-
         // 运行脚本
         await exec(await utils.joins('bash', location, version, __dirname));
     } catch (error) {
@@ -40,6 +38,8 @@ export async function getScript(version: string): Promise<string> {
 
     // 解析自定义的一些扩展和工具，追加到脚本中
     script += await customCmd(version)
+
+    console.log((script))
 
     // 把准备好的命令重新写回文件
     return await utils.writeScript(script_name, script);
