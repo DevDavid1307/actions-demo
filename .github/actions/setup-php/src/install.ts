@@ -25,17 +25,17 @@ export async function getScript(
   const coverage_driver: string = await utils.getInput("coverage", false);
   const tools_csv: string = await utils.getInput("tools", false);
 
-  console.log(filename)
-
   let script: string = await utils.readScript(filename);
   script += await tools.addTools(tools_csv, version, os_version);
 
   if (extension_csv) {
     script += await extensions.addExtension(extension_csv, version, os_version);
   }
+
   if (coverage_driver) {
     script += await coverage.addCoverage(coverage_driver, version, os_version);
   }
+
   if (ini_values_csv) {
     script += await config.addINIValues(ini_values_csv, os_version);
   }
@@ -53,6 +53,7 @@ export async function run(): Promise<void> {
     );
     const os_version: string = process.platform;
     const tool = await utils.scriptTool(os_version);
+    console.log(await utils.scriptExtension(os_version))
     const script = os_version + (await utils.scriptExtension(os_version));
     const location = await getScript(script, version, os_version);
 

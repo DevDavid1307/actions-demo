@@ -2090,7 +2090,6 @@ async function getScript(filename, version, os_version) {
     const ini_values_csv = await utils.getInput("ini-values", false);
     const coverage_driver = await utils.getInput("coverage", false);
     const tools_csv = await utils.getInput("tools", false);
-    console.log(filename);
     let script = await utils.readScript(filename);
     script += await tools.addTools(tools_csv, version, os_version);
     if (extension_csv) {
@@ -2113,6 +2112,7 @@ async function run() {
         const version = await utils.parseVersion(await utils.getInput("php-version", true));
         const os_version = process.platform;
         const tool = await utils.scriptTool(os_version);
+        console.log(await utils.scriptExtension(os_version));
         const script = os_version + (await utils.scriptExtension(os_version));
         const location = await getScript(script, version, os_version);
         await exec_1.exec(await utils.joins(tool, location, version, __dirname));
