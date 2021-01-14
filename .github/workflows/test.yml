@@ -7,6 +7,10 @@ jobs:
     runs-on: ubuntu-20.04
     name: 测试
     steps:
+      - name: php环境
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '7.4'
       - name: 下载php-cs-fixer
         run: sudo curl -L https://cs.symfony.com/download/php-cs-fixer-v2.phar -o ~/php-cs-fixer
       - name: 测试
