@@ -12,10 +12,7 @@ import * as utils from "./utils";
  * @param filename
  * @param version
  */
-export async function getScript(
-  filename: string,
-  version: string,
-): Promise<string> {
+export async function getScript(filename: string, version: string): Promise<string> {
   // taking inputs
   process.env["fail_fast"] = await utils.getInput("fail-fast", false);
 
@@ -25,18 +22,18 @@ export async function getScript(
   const tools_csv: string = await utils.getInput("tools", false);
 
   let script: string = await utils.readScript(filename);
-  script += await tools.addTools(tools_csv, 'linux'); // todo 版本
+  script += await tools.addTools(tools_csv);
 
   if (extension_csv) {
-    script += await extensions.addExtension(extension_csv, version, 'linux'); // todo 版本
+    script += await extensions.addExtension(extension_csv, version);
   }
 
   if (coverage_driver) {
-    script += await coverage.addCoverage(coverage_driver, version, 'linux'); // todo 版本
+    script += await coverage.addCoverage(coverage_driver, version);
   }
 
   if (ini_values_csv) {
-    script += await config.addINIValues(ini_values_csv, 'linux'); // todo 版本
+    script += await config.addINIValues(ini_values_csv);
   }
 
   return await utils.writeScript(filename, script);

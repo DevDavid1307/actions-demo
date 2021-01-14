@@ -1569,7 +1569,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.addINIValues = exports.addINIValuesWindows = exports.addINIValuesUnix = void 0;
+exports.addINIValues = exports.addINIValuesUnix = void 0;
 const utils = __importStar(__nccwpck_require__(839));
 /**
  * Add script to set custom ini values for unix
@@ -1581,7 +1581,7 @@ async function addINIValuesUnix(ini_values_csv) {
     let script = "";
     await utils.asyncForEach(ini_values, async function (line) {
         script +=
-            "\n" + (await utils.addLog("$tick", line, "Added to php.ini", "linux"));
+            "\n" + (await utils.addLog("$tick", line, "Added to php.ini"));
     });
     return ('echo "' +
         ini_values.join("\n") +
@@ -1590,50 +1590,26 @@ async function addINIValuesUnix(ini_values_csv) {
 }
 exports.addINIValuesUnix = addINIValuesUnix;
 /**
- * Add script to set custom ini values for windows
- *
- * @param ini_values_csv
- */
-async function addINIValuesWindows(ini_values_csv) {
-    const ini_values = await utils.CSVArray(ini_values_csv);
-    let script = "\n";
-    await utils.asyncForEach(ini_values, async function (line) {
-        script +=
-            (await utils.addLog("$tick", line, "Added to php.ini", "win32")) + "\n";
-    });
-    return ('Add-Content "$php_dir\\php.ini" "' + ini_values.join("\n") + '"' + script);
-}
-exports.addINIValuesWindows = addINIValuesWindows;
-/**
  * Function to add custom ini values
  *
  * @param ini_values_csv
- * @param os_version
  * @param no_step
  */
-async function addINIValues(ini_values_csv, os_version, no_step = false) {
+async function addINIValues(ini_values_csv, no_step = false) {
     let script = "\n";
     switch (no_step) {
         case true:
             script +=
-                (await utils.stepLog("Add php.ini values", os_version)) +
-                    (await utils.suppressOutput(os_version)) +
+                (await utils.stepLog("Add php.ini values")) +
+                    (await utils.suppressOutput()) +
                     "\n";
             break;
         case false:
         default:
-            script += (await utils.stepLog("Add php.ini values", os_version)) + "\n";
+            script += (await utils.stepLog("Add php.ini values")) + "\n";
             break;
     }
-    switch (os_version) {
-        case "win32":
-            return script + (await addINIValuesWindows(ini_values_csv));
-        case "darwin":
-        case "linux":
-            return script + (await addINIValuesUnix(ini_values_csv));
-        default:
-            return await utils.log("Platform " + os_version + " is not supported", os_version, "error");
-    }
+    return script + (await addINIValuesUnix(ini_values_csv));
 }
 exports.addINIValues = addINIValues;
 
@@ -1664,7 +1640,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.addCoverage = exports.disableCoverage = exports.addCoverageXdebug = void 0;
+exports.addCoverage = exports.addCoverageXdebug = void 0;
 const utils = __importStar(__nccwpck_require__(839));
 const extensions = __importStar(__nccwpck_require__(533));
 /**
@@ -1672,57 +1648,31 @@ const extensions = __importStar(__nccwpck_require__(533));
  *
  * @param extension
  * @param version
- * @param os_version
  * @param pipe
  */
-async function addCoverageXdebug(extension, version, os_version, pipe) {
-    const xdebug = (await extensions.addExtension(extension, version, os_version, true)) +
+async function addCoverageXdebug(extension, version, pipe) {
+    const xdebug = (await extensions.addExtension(extension, version, true)) +
         pipe;
-    const log = await utils.addLog("$tick", extension, "Xdebug enabled as coverage driver", os_version);
+    const log = await utils.addLog("$tick", extension, "Xdebug enabled as coverage driver");
     return xdebug + "\n" + log;
 }
 exports.addCoverageXdebug = addCoverageXdebug;
-/**
- * Function to disable Xdebug and PCOV
- *
- * @param version
- * @param os_version
- * @param pipe
- */
-async function disableCoverage(version, os_version, pipe) {
-    let script = "\n";
-    switch (os_version) {
-        case "linux":
-        case "darwin":
-            script += "remove_extension xdebug" + pipe + "\n";
-            script += "remove_extension pcov" + pipe + "\n";
-            break;
-        case "win32":
-            script += "Remove-Extension xdebug" + pipe + "\n";
-            script += "Remove-Extension pcov" + pipe + "\n";
-            break;
-    }
-    script += await utils.addLog("$tick", "none", "Disabled Xdebug and PCOV", os_version);
-    return script;
-}
-exports.disableCoverage = disableCoverage;
 /**
  * Function to set coverage driver
  *
  * @param coverage_driver
  * @param version
- * @param os_version
  */
-async function addCoverage(coverage_driver, version, os_version) {
+async function addCoverage(coverage_driver, version) {
     coverage_driver = coverage_driver.toLowerCase();
-    const script = "\n" + (await utils.stepLog("Setup Coverage", os_version));
-    const pipe = await utils.suppressOutput(os_version);
+    const script = "\n" + (await utils.stepLog("Setup Coverage"));
+    const pipe = await utils.suppressOutput();
     switch (coverage_driver) {
         case "xdebug":
         case "xdebug3":
-            return (script + (await addCoverageXdebug("xdebug", version, os_version, pipe)));
+            return (script + (await addCoverageXdebug("xdebug", version, pipe)));
         case "xdebug2":
-            return (script + (await addCoverageXdebug("xdebug2", version, os_version, pipe)));
+            return (script + (await addCoverageXdebug("xdebug2", version, pipe)));
         default:
             return "";
     }
@@ -1795,7 +1745,7 @@ async function addExtensionLinux(extension_csv, version) {
                 return;
             // match 5.3pcov to 7.0pcov
             case /(5\.[3-6]|7\.0)pcov/.test(version_extension):
-                add_script += await utils.getUnsupportedLog("pcov", version, "linux");
+                add_script += await utils.getUnsupportedLog("pcov", version);
                 return;
             // match 7.2xdebug2...7.4xdebug2
             case /^7\.[2-4]xdebug2$/.test(version_extension):
@@ -1823,15 +1773,14 @@ exports.addExtensionLinux = addExtensionLinux;
  *
  * @param extension_csv
  * @param version
- * @param os_version
  * @param no_step
  */
-async function addExtension(extension_csv, version, os_version, no_step = false) {
-    const log = await utils.stepLog("Setup Extensions", os_version);
+async function addExtension(extension_csv, version, no_step = false) {
+    const log = await utils.stepLog("Setup Extensions");
     let script = "\n";
     switch (no_step) {
         case true:
-            script += log + (await utils.suppressOutput(os_version));
+            script += log + (await utils.suppressOutput());
             break;
         case false:
         default:
@@ -1891,15 +1840,15 @@ async function getScript(filename, version) {
     const coverage_driver = await utils.getInput("coverage", false);
     const tools_csv = await utils.getInput("tools", false);
     let script = await utils.readScript(filename);
-    script += await tools.addTools(tools_csv, 'linux'); // todo 版本
+    script += await tools.addTools(tools_csv);
     if (extension_csv) {
-        script += await extensions.addExtension(extension_csv, version, 'linux'); // todo 版本
+        script += await extensions.addExtension(extension_csv, version);
     }
     if (coverage_driver) {
-        script += await coverage.addCoverage(coverage_driver, version, 'linux'); // todo 版本
+        script += await coverage.addCoverage(coverage_driver, version);
     }
     if (ini_values_csv) {
-        script += await config.addINIValues(ini_values_csv, 'linux'); // todo 版本
+        script += await config.addINIValues(ini_values_csv);
     }
     return await utils.writeScript(filename, script);
 }
@@ -2182,10 +2131,9 @@ exports.addArchive = addArchive;
  * Setup tools
  *
  * @param tools_csv
- * @param os_version
  */
-async function addTools(tools_csv, os_version) {
-    let script = "\n" + (await utils.stepLog("Setup Tools", os_version));
+async function addTools(tools_csv) {
+    let script = "\n" + (await utils.stepLog("Setup Tools"));
     const tools_list = await getCleanedToolsList(tools_csv);
     await utils.asyncForEach(tools_list, async function (release) {
         const tool_data = await parseTool(release);
@@ -2210,7 +2158,7 @@ async function addTools(tools_csv, os_version) {
                 script += await addArchive(tool, url, '"--version"');
                 break;
             default:
-                script += await utils.addLog("$cross", tool, "Tool " + tool + " is not supported", os_version);
+                script += await utils.addLog("$cross", tool, "Tool " + tool + " is not supported");
                 break;
         }
     });
@@ -2338,11 +2286,9 @@ exports.color = color;
  * Log to console
  *
  * @param message
- * @param os_version
  * @param log_type
  */
-async function log(message, os_version, log_type) {
-    // todo 删除了版本
+async function log(message, log_type) {
     return 'echo "\\033[' + (await color(log_type)) + ";1m" + message + '\\033[0m"';
 }
 exports.log = log;
@@ -2350,10 +2296,8 @@ exports.log = log;
  * Function to log a step
  *
  * @param message
- * @param os_version
  */
-async function stepLog(message, os_version) {
-    // todo 删除了版本
+async function stepLog(message) {
     return 'step_log "' + message + '"';
 }
 exports.stepLog = stepLog;
@@ -2362,10 +2306,8 @@ exports.stepLog = stepLog;
  * @param mark
  * @param subject
  * @param message
- * @param os_version
  */
-async function addLog(mark, subject, message, os_version) {
-    // todo 删除了版本
+async function addLog(mark, subject, message) {
     return 'add_log "' + mark + '" "' + subject + '" "' + message + '"';
 }
 exports.addLog = addLog;
@@ -2451,11 +2393,8 @@ async function getExtensionPrefix(extension) {
 exports.getExtensionPrefix = getExtensionPrefix;
 /**
  * Function to get the suffix to suppress console output
- *
- * @param os_version
  */
-async function suppressOutput(os_version) {
-    // todo 删除了版本
+async function suppressOutput() {
     return " >/dev/null 2>&1";
 }
 exports.suppressOutput = suppressOutput;
@@ -2464,11 +2403,10 @@ exports.suppressOutput = suppressOutput;
  *
  * @param extension
  * @param version
- * @param os_version
  */
-async function getUnsupportedLog(extension, version, os_version) {
+async function getUnsupportedLog(extension, version) {
     return ("\n" +
-        (await addLog("$cross", extension, [extension, "is not supported on PHP", version].join(" "), os_version)) +
+        (await addLog("$cross", extension, [extension, "is not supported on PHP", version].join(" "))) +
         "\n");
 }
 exports.getUnsupportedLog = getUnsupportedLog;
@@ -2494,7 +2432,6 @@ exports.joins = joins;
  * Function to get script extensions
  */
 async function scriptExtension() {
-    // todo 删除了版本
     return ".sh";
 }
 exports.scriptExtension = scriptExtension;

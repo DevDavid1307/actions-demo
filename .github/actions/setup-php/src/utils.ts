@@ -101,15 +101,9 @@ export async function color(type: string): Promise<string> {
  * Log to console
  *
  * @param message
- * @param os_version
  * @param log_type
  */
-export async function log(
-  message: string,
-  os_version: string,
-  log_type: string
-): Promise<string> {
-    // todo 删除了版本
+export async function log(message: string, log_type: string): Promise<string> {
     return 'echo "\\033[' + (await color(log_type)) + ";1m" + message + '\\033[0m"'
 }
 
@@ -117,13 +111,8 @@ export async function log(
  * Function to log a step
  *
  * @param message
- * @param os_version
  */
-export async function stepLog(
-  message: string,
-  os_version: string
-): Promise<string> {
-    // todo 删除了版本
+export async function stepLog(message: string): Promise<string> {
     return 'step_log "' + message + '"';
 }
 
@@ -132,15 +121,8 @@ export async function stepLog(
  * @param mark
  * @param subject
  * @param message
- * @param os_version
  */
-export async function addLog(
-  mark: string,
-  subject: string,
-  message: string,
-  os_version: string
-): Promise<string> {
-    // todo 删除了版本
+export async function addLog(mark: string, subject: string, message: string): Promise<string> {
     return 'add_log "' + mark + '" "' + subject + '" "' + message + '"';
 }
 
@@ -234,11 +216,8 @@ export async function getExtensionPrefix(extension: string): Promise<string> {
 
 /**
  * Function to get the suffix to suppress console output
- *
- * @param os_version
  */
-export async function suppressOutput(os_version: string): Promise<string> {
-    // todo 删除了版本
+export async function suppressOutput(): Promise<string> {
     return " >/dev/null 2>&1";
 }
 
@@ -247,20 +226,14 @@ export async function suppressOutput(os_version: string): Promise<string> {
  *
  * @param extension
  * @param version
- * @param os_version
  */
-export async function getUnsupportedLog(
-  extension: string,
-  version: string,
-  os_version: string
-): Promise<string> {
+export async function getUnsupportedLog(extension: string, version: string): Promise<string> {
   return (
     "\n" +
     (await addLog(
       "$cross",
       extension,
       [extension, "is not supported on PHP", version].join(" "),
-      os_version
     )) +
     "\n"
   );
@@ -288,7 +261,6 @@ export async function joins(...str: string[]): Promise<string> {
  * Function to get script extensions
  */
 export async function scriptExtension(): Promise<string> {
-    // todo 删除了版本
     return ".sh";
 }
 

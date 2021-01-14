@@ -58,7 +58,7 @@ export async function addExtensionLinux(
         return;
       // match 5.3pcov to 7.0pcov
       case /(5\.[3-6]|7\.0)pcov/.test(version_extension):
-        add_script += await utils.getUnsupportedLog("pcov", version, "linux");
+        add_script += await utils.getUnsupportedLog("pcov", version);
         return;
       // match 7.2xdebug2...7.4xdebug2
       case /^7\.[2-4]xdebug2$/.test(version_extension):
@@ -91,20 +91,14 @@ export async function addExtensionLinux(
  *
  * @param extension_csv
  * @param version
- * @param os_version
  * @param no_step
  */
-export async function addExtension(
-  extension_csv: string,
-  version: string,
-  os_version: string,
-  no_step = false
-): Promise<string> {
-  const log: string = await utils.stepLog("Setup Extensions", os_version);
+export async function addExtension(extension_csv: string, version: string, no_step = false): Promise<string> {
+  const log: string = await utils.stepLog("Setup Extensions");
   let script = "\n";
   switch (no_step) {
     case true:
-      script += log + (await utils.suppressOutput(os_version));
+      script += log + (await utils.suppressOutput());
       break;
     case false:
     default:

@@ -7,59 +7,22 @@ import * as config from "./config";
  *
  * @param extension
  * @param version
- * @param os_version
  * @param pipe
  */
 export async function addCoverageXdebug(
   extension: string,
   version: string,
-  os_version: string,
   pipe: string
 ): Promise<string> {
   const xdebug =
-    (await extensions.addExtension(extension, version, os_version, true)) +
+    (await extensions.addExtension(extension, version, true)) +
     pipe;
   const log = await utils.addLog(
     "$tick",
     extension,
     "Xdebug enabled as coverage driver",
-    os_version
   );
   return xdebug + "\n" + log;
-}
-
-/**
- * Function to disable Xdebug and PCOV
- *
- * @param version
- * @param os_version
- * @param pipe
- */
-export async function disableCoverage(
-  version: string,
-  os_version: string,
-  pipe: string
-): Promise<string> {
-  let script = "\n";
-  switch (os_version) {
-    case "linux":
-    case "darwin":
-      script += "remove_extension xdebug" + pipe + "\n";
-      script += "remove_extension pcov" + pipe + "\n";
-      break;
-    case "win32":
-      script += "Remove-Extension xdebug" + pipe + "\n";
-      script += "Remove-Extension pcov" + pipe + "\n";
-      break;
-  }
-  script += await utils.addLog(
-    "$tick",
-    "none",
-    "Disabled Xdebug and PCOV",
-    os_version
-  );
-
-  return script;
 }
 
 /**
@@ -67,26 +30,24 @@ export async function disableCoverage(
  *
  * @param coverage_driver
  * @param version
- * @param os_version
  */
 export async function addCoverage(
   coverage_driver: string,
   version: string,
-  os_version: string
 ): Promise<string> {
   coverage_driver = coverage_driver.toLowerCase();
   const script: string =
-    "\n" + (await utils.stepLog("Setup Coverage", os_version));
-  const pipe: string = await utils.suppressOutput(os_version);
+    "\n" + (await utils.stepLog("Setup Coverage"));
+  const pipe: string = await utils.suppressOutput();
   switch (coverage_driver) {
     case "xdebug":
     case "xdebug3":
       return (
-        script + (await addCoverageXdebug("xdebug", version, os_version, pipe))
+        script + (await addCoverageXdebug("xdebug", version, pipe))
       );
     case "xdebug2":
       return (
-        script + (await addCoverageXdebug("xdebug2", version, os_version, pipe))
+        script + (await addCoverageXdebug("xdebug2", version, pipe))
       );
     default:
       return "";

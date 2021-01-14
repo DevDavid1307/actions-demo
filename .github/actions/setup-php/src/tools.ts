@@ -265,10 +265,10 @@ export async function addArchive(
  * Setup tools
  *
  * @param tools_csv
- * @param os_version
  */
-export async function addTools(tools_csv: string, os_version: string): Promise<string> {
-  let script = "\n" + (await utils.stepLog("Setup Tools", os_version));
+export async function addTools(tools_csv: string): Promise<string> {
+  let script = "\n" + (await utils.stepLog("Setup Tools"));
+
   const tools_list: Array<string> = await getCleanedToolsList(tools_csv);
 
   await utils.asyncForEach(tools_list, async function (release: string) {
@@ -307,7 +307,6 @@ export async function addTools(tools_csv: string, os_version: string): Promise<s
           "$cross",
           tool,
           "Tool " + tool + " is not supported",
-          os_version
         );
         break;
     }
