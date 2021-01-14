@@ -1,0 +1,13 @@
+name: 测试
+
+on: push
+
+jobs:
+  demo:
+    runs-on: ubuntu-20.04
+    name: 测试
+    steps:
+      - name: 下载php-cs-fixer
+      run: sudo curl -L https://cs.symfony.com/download/php-cs-fixer-v2.phar -o ~/php-cs-fixer
+      - name: 测试
+        run: sudo ls -l ~
