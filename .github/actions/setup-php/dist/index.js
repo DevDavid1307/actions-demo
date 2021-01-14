@@ -1898,7 +1898,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.addTools = exports.addArchive = exports.getCleanedToolsList = exports.getComposerUrl = exports.addComposer = exports.getPharUrl = exports.getCodeceptionUri = exports.getCodeceptionUriBuilder = exports.getUri = exports.parseTool = exports.getToolVersion = void 0;
+exports.chooseTool = exports.addTools = exports.addArchive = exports.getCleanedToolsList = exports.getComposerUrl = exports.addComposer = exports.getPharUrl = exports.getCodeceptionUri = exports.getCodeceptionUriBuilder = exports.getUri = exports.parseTool = exports.getToolVersion = void 0;
 const utils = __importStar(__nccwpck_require__(839));
 /**
  * Function to get tool version
@@ -2137,34 +2137,31 @@ async function addTools(tools_csv) {
     const tools_list = await getCleanedToolsList(tools_csv);
     await utils.asyncForEach(tools_list, async function (release) {
         const tool_data = await parseTool(release);
-        const tool = tool_data.name;
-        const version = tool_data.version;
-        const github = "https://github.com/";
-        let uri = await getUri(tool, ".phar", version, "releases", "", "download");
-        script += "\n";
-        let url = "";
-        switch (tool) {
-            case "composer":
-                url = await getComposerUrl(version);
-                script += await addArchive("composer", url, version);
-                break;
-            case "php-cs-fixer":
-                uri = await getUri(tool, ".phar", version, "releases", "v", "download");
-                url = github + "FriendsOfPHP/PHP-CS-Fixer/" + uri;
-                script += await addArchive(tool, url, '"-V"');
-                break;
-            case "phpunit":
-                url = await getPharUrl("https://phar.phpunit.de", tool, "", version);
-                script += await addArchive(tool, url, '"--version"');
-                break;
-            default:
-                script += await utils.addLog("$cross", tool, "Tool " + tool + " is not supported");
-                break;
-        }
+        script += "\n" + await chooseTool(tool_data);
     });
     return script;
 }
 exports.addTools = addTools;
+async function chooseTool(tool_data) {
+    const tool = tool_data.name;
+    const version = tool_data.version;
+    let url = "";
+    switch (tool) {
+        case "composer":
+            url = await getComposerUrl(version);
+            return await addArchive("composer", url, version);
+        case "php-cs-fixer":
+            const uri = await getUri(tool, ".phar", version, "releases", "v", "download");
+            url = "https://github.com/FriendsOfPHP/PHP-CS-Fixer/" + uri;
+            return await addArchive(tool, url, '"-V"');
+        case "phpunit":
+            url = await getPharUrl("https://phar.phpunit.de", tool, "", version);
+            return await addArchive(tool, url, '"--version"');
+        default:
+            return await utils.addLog("$cross", tool, "Tool " + tool + " is not supported");
+    }
+}
+exports.chooseTool = chooseTool;
 
 
 /***/ }),
