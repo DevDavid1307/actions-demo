@@ -7,6 +7,8 @@ jobs:
     runs-on: ubuntu-20.04
     name: 测试
     steps:
+      - name: 拉取分支
+        uses: actions/checkout@v2
       - name: php环境
         uses: ./.github/actions/setup-php
         with:
