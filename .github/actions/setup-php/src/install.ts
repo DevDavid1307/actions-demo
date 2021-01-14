@@ -25,6 +25,8 @@ export async function getScript(
   const coverage_driver: string = await utils.getInput("coverage", false);
   const tools_csv: string = await utils.getInput("tools", false);
 
+  console.log(filename)
+
   let script: string = await utils.readScript(filename);
   script += await tools.addTools(tools_csv, version, os_version);
 
@@ -53,6 +55,7 @@ export async function run(): Promise<void> {
     const tool = await utils.scriptTool(os_version);
     const script = os_version + (await utils.scriptExtension(os_version));
     const location = await getScript(script, version, os_version);
+
     await exec(await utils.joins(tool, location, version, __dirname));
   } catch (error) {
     core.setFailed(error.message);

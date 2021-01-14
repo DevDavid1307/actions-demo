@@ -375,19 +375,8 @@ export async function scriptExtension(os_version: string): Promise<string> {
  * @param os_version
  */
 export async function scriptTool(os_version: string): Promise<string> {
-  switch (os_version) {
-    case "win32":
-      return "pwsh";
-    case "linux":
-    case "darwin":
-      return "bash";
-    default:
-      return await log(
-        "Platform " + os_version + " is not supported",
-        os_version,
-        "error"
-      );
-  }
+    // todo 删除了版本
+    return "bash";
 }
 
 /**

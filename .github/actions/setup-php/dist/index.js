@@ -2090,6 +2090,7 @@ async function getScript(filename, version, os_version) {
     const ini_values_csv = await utils.getInput("ini-values", false);
     const coverage_driver = await utils.getInput("coverage", false);
     const tools_csv = await utils.getInput("tools", false);
+    console.log(filename);
     let script = await utils.readScript(filename);
     script += await tools.addTools(tools_csv, version, os_version);
     if (extension_csv) {
@@ -2893,15 +2894,8 @@ exports.scriptExtension = scriptExtension;
  * @param os_version
  */
 async function scriptTool(os_version) {
-    switch (os_version) {
-        case "win32":
-            return "pwsh";
-        case "linux":
-        case "darwin":
-            return "bash";
-        default:
-            return await log("Platform " + os_version + " is not supported", os_version, "error");
-    }
+    // todo 删除了版本
+    return "bash";
 }
 exports.scriptTool = scriptTool;
 /**
