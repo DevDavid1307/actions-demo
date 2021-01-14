@@ -1,4 +1,4 @@
-import * as utils from './utils';
+import * as utils from "./utils";
 
 /**
  * Install and enable extensions for darwin
@@ -11,16 +11,16 @@ export async function addExtensionDarwin(
   version: string
 ): Promise<string> {
   const extensions: Array<string> = await utils.extensionArray(extension_csv);
-  let add_script = '\n';
-  let remove_script = '';
+  let add_script = "\n";
+  let remove_script = "";
   await utils.asyncForEach(extensions, async function (extension: string) {
     const version_extension: string = version + extension;
-    const [ext_name, ext_version]: string[] = extension.split('-');
+    const [ext_name, ext_version]: string[] = extension.split("-");
     const ext_prefix = await utils.getExtensionPrefix(ext_name);
     switch (true) {
       // match :extension
       case /^:/.test(ext_name):
-        remove_script += '\nremove_extension ' + ext_name.slice(1);
+        remove_script += "\nremove_extension " + ext_name.slice(1);
         return;
       // match 5.3blackfire...8.0blackfire
       // match 5.3blackfire-(semver)...8.0blackfire-(semver)
@@ -37,9 +37,9 @@ export async function addExtensionDarwin(
       case /^5\.6couchbase$|^7\.[0-4]couchbase$/.test(version_extension):
         add_script += await utils.customPackage(
           ext_name,
-          'ext',
+          "ext",
           extension,
-          'darwin'
+          "darwin"
         );
         return;
       // match pre-release versions. For example - xdebug-beta
@@ -47,7 +47,7 @@ export async function addExtensionDarwin(
         version_extension
       ):
         add_script += await utils.joins(
-          '\nadd_unstable_extension',
+          "\nadd_unstable_extension",
           ext_name,
           ext_version,
           ext_prefix
@@ -56,7 +56,7 @@ export async function addExtensionDarwin(
       // match semver
       case /.*-\d+\.\d+\.\d+.*/.test(version_extension):
         add_script += await utils.joins(
-          '\nadd_pecl_extension',
+          "\nadd_pecl_extension",
           ext_name,
           ext_version,
           ext_prefix
@@ -64,7 +64,7 @@ export async function addExtensionDarwin(
         return;
       // match 5.3pcov to 7.0pcov
       case /(5\.[3-6]|7\.0)pcov/.test(version_extension):
-        add_script += await utils.getUnsupportedLog('pcov', version, 'darwin');
+        add_script += await utils.getUnsupportedLog("pcov", version, "darwin");
         return;
       // match 5.6 to 8.9 for amqp, grpc, igbinary, imagick, imap, protobuf, swoole and xdebug
       // match 7.1 to 8.9 for pcov
@@ -73,23 +73,23 @@ export async function addExtensionDarwin(
       ):
       case /(7\.[1-4]|8\.[0-9])pcov/.test(version_extension):
         add_script += await utils.joins(
-          '\nadd_brew_extension',
+          "\nadd_brew_extension",
           ext_name,
           ext_prefix
         );
         return;
       // match 5.6redis
       case /5\.6redis/.test(version_extension):
-        extension = 'redis-2.2.8';
+        extension = "redis-2.2.8";
         break;
       // match sqlite
       case /^sqlite$/.test(extension):
-        extension = 'sqlite3';
+        extension = "sqlite3";
         break;
       default:
         break;
     }
-    add_script += await utils.joins('\nadd_extension', extension, ext_prefix);
+    add_script += await utils.joins("\nadd_extension", extension, ext_prefix);
   });
   return add_script + remove_script;
 }
@@ -105,16 +105,16 @@ export async function addExtensionWindows(
   version: string
 ): Promise<string> {
   const extensions: Array<string> = await utils.extensionArray(extension_csv);
-  let add_script = '\n';
-  let remove_script = '';
+  let add_script = "\n";
+  let remove_script = "";
   await utils.asyncForEach(extensions, async function (extension: string) {
-    const [ext_name, ext_version]: string[] = extension.split('-');
+    const [ext_name, ext_version]: string[] = extension.split("-");
     const version_extension: string = version + extension;
     let matches: RegExpExecArray;
     switch (true) {
       // Match :extension
       case /^:/.test(ext_name):
-        remove_script += '\nRemove-Extension ' + ext_name.slice(1);
+        remove_script += "\nRemove-Extension " + ext_name.slice(1);
         break;
       // match 5.3blackfire...8.0blackfire
       // match 5.3blackfire-(semver)...8.0blackfire-(semver)
@@ -129,25 +129,25 @@ export async function addExtensionWindows(
       case /^7\.[0-3]phalcon3$|^7\.[2-4]phalcon4$/.test(version_extension):
         add_script += await utils.customPackage(
           ext_name,
-          'ext',
+          "ext",
           extension,
-          'win32'
+          "win32"
         );
         return;
       // match pre-release versions. For example - xdebug-beta
       case /.*-(stable|beta|alpha|devel|snapshot)/.test(version_extension):
         add_script += await utils.joins(
-          '\nAdd-Extension',
+          "\nAdd-Extension",
           ext_name,
-          ext_version.replace('stable', '')
+          ext_version.replace("stable", "")
         );
         break;
       // match semver without state
       case /.*-\d+\.\d+\.\d+$/.test(version_extension):
         add_script += await utils.joins(
-          '\nAdd-Extension',
+          "\nAdd-Extension",
           ext_name,
-          'stable',
+          "stable",
           ext_version
         );
         break;
@@ -157,40 +157,40 @@ export async function addExtensionWindows(
           version_extension
         ) as RegExpExecArray;
         add_script += await utils.joins(
-          '\nAdd-Extension',
+          "\nAdd-Extension",
           ext_name,
-          matches[2].replace('preview', 'devel'),
+          matches[2].replace("preview", "devel"),
           matches[1]
         );
         break;
       // match 7.2xdebug2 to 7.4xdebug2
       case /7\.[2-4]xdebug2/.test(version_extension):
-        add_script += '\nAdd-Extension xdebug stable 2.9.8';
+        add_script += "\nAdd-Extension xdebug stable 2.9.8";
         break;
       // match 5.3pcov to 7.0pcov
       case /(5\.[3-6]|7\.0)pcov/.test(version_extension):
-        add_script += await utils.getUnsupportedLog('pcov', version, 'win32');
+        add_script += await utils.getUnsupportedLog("pcov", version, "win32");
         break;
       // match 5.3mysql..5.6mysql
       // match 5.3mysqli..5.6mysqli
       // match 5.3mysqlnd..5.6mysqlnd
       case /^5\.\d(mysql|mysqli|mysqlnd)$/.test(version_extension):
         add_script +=
-          '\nAdd-Extension mysql\nAdd-Extension mysqli\nAdd-Extension mysqlnd';
+          "\nAdd-Extension mysql\nAdd-Extension mysqli\nAdd-Extension mysqlnd";
         break;
       // match 7.0mysql..8.9mysql
       // match 7.0mysqli..8.9mysqli
       // match 7.0mysqlnd..8.9mysqlnd
       case /[7-8]\.\d(mysql|mysqli|mysqlnd)$/.test(version_extension):
-        add_script += '\nAdd-Extension mysqli\nAdd-Extension mysqlnd';
+        add_script += "\nAdd-Extension mysqli\nAdd-Extension mysqlnd";
         break;
       // match sqlite
       case /^sqlite$/.test(extension):
-        extension = 'sqlite3';
-        add_script += await utils.joins('\nAdd-Extension', extension);
+        extension = "sqlite3";
+        add_script += await utils.joins("\nAdd-Extension", extension);
         break;
       default:
-        add_script += '\nAdd-Extension ' + extension;
+        add_script += "\nAdd-Extension " + extension;
         break;
     }
   });
@@ -208,16 +208,16 @@ export async function addExtensionLinux(
   version: string
 ): Promise<string> {
   const extensions: Array<string> = await utils.extensionArray(extension_csv);
-  let add_script = '\n';
-  let remove_script = '';
+  let add_script = "\n";
+  let remove_script = "";
   await utils.asyncForEach(extensions, async function (extension: string) {
     const version_extension: string = version + extension;
-    const [ext_name, ext_version]: string[] = extension.split('-');
+    const [ext_name, ext_version]: string[] = extension.split("-");
     const ext_prefix = await utils.getExtensionPrefix(ext_name);
     switch (true) {
       // Match :extension
       case /^:/.test(ext_name):
-        remove_script += '\nremove_extension ' + ext_name.slice(1);
+        remove_script += "\nremove_extension " + ext_name.slice(1);
         return;
       // match 5.3blackfire...8.0blackfire
       // match 5.3blackfire-(semver)...8.0blackfire-(semver)
@@ -239,9 +239,9 @@ export async function addExtensionLinux(
       case /^((5\.6)|(7\.[0-4]))(gearman|couchbase)$/.test(version_extension):
         add_script += await utils.customPackage(
           ext_name,
-          'ext',
+          "ext",
           extension,
-          'linux'
+          "linux"
         );
         return;
       // match pre-release versions. For example - xdebug-beta
@@ -249,7 +249,7 @@ export async function addExtensionLinux(
         version_extension
       ):
         add_script += await utils.joins(
-          '\nadd_unstable_extension',
+          "\nadd_unstable_extension",
           ext_name,
           ext_version,
           ext_prefix
@@ -258,7 +258,7 @@ export async function addExtensionLinux(
       // match semver versions
       case /.*-\d+\.\d+\.\d+.*/.test(version_extension):
         add_script += await utils.joins(
-          '\nadd_pecl_extension',
+          "\nadd_pecl_extension",
           ext_name,
           ext_version,
           ext_prefix
@@ -266,30 +266,30 @@ export async function addExtensionLinux(
         return;
       // match 5.3pcov to 7.0pcov
       case /(5\.[3-6]|7\.0)pcov/.test(version_extension):
-        add_script += await utils.getUnsupportedLog('pcov', version, 'linux');
+        add_script += await utils.getUnsupportedLog("pcov", version, "linux");
         return;
       // match 7.2xdebug2...7.4xdebug2
       case /^7\.[2-4]xdebug2$/.test(version_extension):
         add_script += await utils.joins(
-          '\nadd_pecl_extension',
-          'xdebug',
-          '2.9.8',
+          "\nadd_pecl_extension",
+          "xdebug",
+          "2.9.8",
           ext_prefix
         );
         return;
       // match pdo extensions
       case /.*pdo[_-].*/.test(version_extension):
-        extension = extension.replace(/pdo[_-]|3/, '');
-        add_script += '\nadd_pdo_extension ' + extension;
+        extension = extension.replace(/pdo[_-]|3/, "");
+        add_script += "\nadd_pdo_extension " + extension;
         return;
       // match sqlite
       case /^sqlite$/.test(extension):
-        extension = 'sqlite3';
+        extension = "sqlite3";
         break;
       default:
         break;
     }
-    add_script += await utils.joins('\nadd_extension', extension, ext_prefix);
+    add_script += await utils.joins("\nadd_extension", extension, ext_prefix);
   });
   return add_script + remove_script;
 }
@@ -308,8 +308,8 @@ export async function addExtension(
   os_version: string,
   no_step = false
 ): Promise<string> {
-  const log: string = await utils.stepLog('Setup Extensions', os_version);
-  let script = '\n';
+  const log: string = await utils.stepLog("Setup Extensions", os_version);
+  let script = "\n";
   switch (no_step) {
     case true:
       script += log + (await utils.suppressOutput(os_version));
@@ -321,17 +321,17 @@ export async function addExtension(
   }
 
   switch (os_version) {
-    case 'win32':
+    case "win32":
       return script + (await addExtensionWindows(extension_csv, version));
-    case 'darwin':
+    case "darwin":
       return script + (await addExtensionDarwin(extension_csv, version));
-    case 'linux':
+    case "linux":
       return script + (await addExtensionLinux(extension_csv, version));
     default:
       return await utils.log(
-        'Platform ' + os_version + ' is not supported',
+        "Platform " + os_version + " is not supported",
         os_version,
-        'error'
+        "error"
       );
   }
 }

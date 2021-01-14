@@ -8,7 +8,7 @@ jobs:
     name: 测试
     steps:
       - name: php环境
-        uses: shivammathur/setup-php@v2
+        uses: ./.github/actions/setup-php
         with:
           php-version: '7.4'
       - name: 下载php-cs-fixer

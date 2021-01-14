@@ -6,9 +6,6 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
-    "lint": "eslint **/*.ts --cache --fix",
-    "format": "prettier --write **/*.ts && git add .",
-    "format-check": "prettier --check **/*.ts",
     "release": "ncc build src/install.ts -o dist && git add -f dist/",
     "test": "jest"
   },
@@ -46,11 +43,5 @@
     "prettier": "^2.2.1",
     "ts-jest": "^26.4.4",
     "typescript": "^4.1.3"
-  },
-  "husky": {
-    "skipCI": true,
-    "hooks": {
-      "pre-commit": "npm run format && npm run lint && npm run test && npm run build && npm run release"
-    }
   }
 }

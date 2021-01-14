@@ -1,10 +1,10 @@
-import {exec} from '@actions/exec/lib/exec';
-import * as core from '@actions/core';
-import * as config from './config';
-import * as coverage from './coverage';
-import * as extensions from './extensions';
-import * as tools from './tools';
-import * as utils from './utils';
+import { exec } from "@actions/exec/lib/exec";
+import * as core from "@actions/core";
+import * as config from "./config";
+import * as coverage from "./coverage";
+import * as extensions from "./extensions";
+import * as tools from "./tools";
+import * as utils from "./utils";
 
 /**
  * Build the script
@@ -18,14 +18,14 @@ export async function getScript(
   version: string,
   os_version: string
 ): Promise<string> {
-  const name = 'setup-php';
-  const url = 'https://setup-php.com/support';
+  const name = "setup-php";
+  const url = "https://setup-php.com/support";
   // taking inputs
-  process.env['fail_fast'] = await utils.getInput('fail-fast', false);
-  const extension_csv: string = await utils.getInput('extensions', false);
-  const ini_values_csv: string = await utils.getInput('ini-values', false);
-  const coverage_driver: string = await utils.getInput('coverage', false);
-  const tools_csv: string = await utils.getInput('tools', false);
+  process.env["fail_fast"] = await utils.getInput("fail-fast", false);
+  const extension_csv: string = await utils.getInput("extensions", false);
+  const ini_values_csv: string = await utils.getInput("ini-values", false);
+  const coverage_driver: string = await utils.getInput("coverage", false);
+  const tools_csv: string = await utils.getInput("tools", false);
 
   let script: string = await utils.readScript(filename);
   script += await tools.addTools(tools_csv, version, os_version);
@@ -40,8 +40,8 @@ export async function getScript(
     script += await config.addINIValues(ini_values_csv, os_version);
   }
 
-  script += '\n' + (await utils.stepLog('Support this project', os_version));
-  script += '\n' + (await utils.addLog('$tick', name, url, os_version));
+  script += "\n" + (await utils.stepLog("Support this project", os_version));
+  script += "\n" + (await utils.addLog("$tick", name, url, os_version));
 
   return await utils.writeScript(filename, script);
 }
@@ -52,7 +52,7 @@ export async function getScript(
 export async function run(): Promise<void> {
   try {
     const version: string = await utils.parseVersion(
-      await utils.getInput('php-version', true)
+      await utils.getInput("php-version", true)
     );
     const os_version: string = process.platform;
     const tool = await utils.scriptTool(os_version);
