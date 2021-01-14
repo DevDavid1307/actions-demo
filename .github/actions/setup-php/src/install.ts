@@ -7,54 +7,70 @@ import * as tools from "./tools";
 import * as utils from "./utils";
 
 /**
+ * Run the script
+ */
+export async function run(): Promise<void> {
+    try {
+        const version: string = await utils.parseVersion(
+            await utils.getInput("php-version", true)
+        );
+
+        const script = 'env' + (await utils.scriptExtension());
+        const location = await getScript(script, version);
+
+        // 运行脚本
+        await exec(await utils.joins('bash', location, version, __dirname));
+    } catch (error) {
+        core.setFailed(error.message);
+    }
+}
+
+/**
  * Build the script
  *
  * @param filename
  * @param version
  */
 export async function getScript(filename: string, version: string): Promise<string> {
-  // taking inputs
-  process.env["fail_fast"] = await utils.getInput("fail-fast", false);
+    process.env["fail_fast"] = await utils.getInput("fail-fast", false);
 
-  const extension_csv: string = await utils.getInput("extensions", false);
-  const ini_values_csv: string = await utils.getInput("ini-values", false);
-  const coverage_driver: string = await utils.getInput("coverage", false);
-  const tools_csv: string = await utils.getInput("tools", false);
+    let script: string = await utils.readScript(filename);
 
-  let script: string = await utils.readScript(filename);
-  script += await tools.addTools(tools_csv);
+    // 解析自定义的一些扩展和工具，追加到脚本中
+    script += await customCmd(version)
 
-  if (extension_csv) {
-    script += await extensions.addExtension(extension_csv, version);
-  }
-
-  if (coverage_driver) {
-    script += await coverage.addCoverage(coverage_driver, version);
-  }
-
-  if (ini_values_csv) {
-    script += await config.addINIValues(ini_values_csv);
-  }
-
-  return await utils.writeScript(filename, script);
+    // 把准备好的命令重新写回文件
+    return await utils.writeScript(filename, script);
 }
 
 /**
- * Run the script
+ * 解析需要安装的工具和扩展、版本等自定义信息
+ *
+ * @param version
  */
-export async function run(): Promise<void> {
-  try {
-    const version: string = await utils.parseVersion(
-      await utils.getInput("php-version", true)
-    );
+export async function customCmd(version: string): Promise<string> {
+    let script = ''
 
-    const script = 'env' + (await utils.scriptExtension());
-    const location = await getScript(script, version);
+    const extension_csv: string = await utils.getInput("extensions", false);
+    const ini_values_csv: string = await utils.getInput("ini-values", false);
+    const coverage_driver: string = await utils.getInput("coverage", false);
+    const tools_csv: string = await utils.getInput("tools", false);
 
-    await exec(await utils.joins('bash', location, version, __dirname));
-  } catch (error) {
-    core.setFailed(error.message);
-  }
+    script += await tools.addTools(tools_csv);
+
+    if (extension_csv) {
+        script += await extensions.addExtension(extension_csv, version);
+    }
+
+    if (coverage_driver) {
+        script += await coverage.addCoverage(coverage_driver, version);
+    }
+
+    if (ini_values_csv) {
+        script += await config.addINIValues(ini_values_csv);
+    }
+
+    return script
 }
 
 // call the run function

@@ -1809,7 +1809,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.run = exports.getScript = void 0;
+exports.customCmd = exports.getScript = exports.run = void 0;
 const exec_1 = __nccwpck_require__(6);
 const core = __importStar(__nccwpck_require__(341));
 const config = __importStar(__nccwpck_require__(30));
@@ -1818,19 +1818,47 @@ const extensions = __importStar(__nccwpck_require__(533));
 const tools = __importStar(__nccwpck_require__(456));
 const utils = __importStar(__nccwpck_require__(839));
 /**
+ * Run the script
+ */
+async function run() {
+    try {
+        const version = await utils.parseVersion(await utils.getInput("php-version", true));
+        const script = 'env' + (await utils.scriptExtension());
+        const location = await getScript(script, version);
+        // 运行脚本
+        await exec_1.exec(await utils.joins('bash', location, version, __dirname));
+    }
+    catch (error) {
+        core.setFailed(error.message);
+    }
+}
+exports.run = run;
+/**
  * Build the script
  *
  * @param filename
  * @param version
  */
 async function getScript(filename, version) {
-    // taking inputs
     process.env["fail_fast"] = await utils.getInput("fail-fast", false);
+    let script = await utils.readScript(filename);
+    // 解析自定义的一些扩展和工具，追加到脚本中
+    script += await customCmd(version);
+    // 把准备好的命令重新写回文件
+    return await utils.writeScript(filename, script);
+}
+exports.getScript = getScript;
+/**
+ * 解析需要安装的工具和扩展、版本等自定义信息
+ *
+ * @param version
+ */
+async function customCmd(version) {
+    let script = '';
     const extension_csv = await utils.getInput("extensions", false);
     const ini_values_csv = await utils.getInput("ini-values", false);
     const coverage_driver = await utils.getInput("coverage", false);
     const tools_csv = await utils.getInput("tools", false);
-    let script = await utils.readScript(filename);
     script += await tools.addTools(tools_csv);
     if (extension_csv) {
         script += await extensions.addExtension(extension_csv, version);
@@ -1841,24 +1869,9 @@ async function getScript(filename, version) {
     if (ini_values_csv) {
         script += await config.addINIValues(ini_values_csv);
     }
-    return await utils.writeScript(filename, script);
+    return script;
 }
-exports.getScript = getScript;
-/**
- * Run the script
- */
-async function run() {
-    try {
-        const version = await utils.parseVersion(await utils.getInput("php-version", true));
-        const script = 'env' + (await utils.scriptExtension());
-        const location = await getScript(script, version);
-        await exec_1.exec(await utils.joins('bash', location, version, __dirname));
-    }
-    catch (error) {
-        core.setFailed(error.message);
-    }
-}
-exports.run = run;
+exports.customCmd = customCmd;
 // call the run function
 run();
 
@@ -2026,11 +2039,7 @@ async function getCleanedToolsList(tools_csv) {
     let tools_list = await utils.CSVArray(tools_csv);
     tools_list = await addComposer(tools_list);
     tools_list = tools_list
-        .map(function (extension) {
-        return extension
-            .trim()
-            .replace(/-agent|behat\/|hirak\/|icanhazstring\/|laravel\/|narrowspark\/automatic-|overtrue\/|phpspec\/|robmorgan\/|symfony\//, "");
-    })
+        .map(function (extension) { return extension.trim(); })
         .filter(Boolean);
     return [...new Set(tools_list)];
 }

@@ -144,13 +144,12 @@ export async function readScript(filename: string): Promise<string> {
  * @param filename
  * @param script
  */
-export async function writeScript(
-  filename: string,
-  script: string
-): Promise<string> {
+export async function writeScript(filename: string, script: string): Promise<string> {
   const runner_dir: string = await getInput("RUNNER_TOOL_CACHE", false);
   const script_path: string = path.join(runner_dir, filename);
+
   fs.writeFileSync(script_path, script, { mode: 0o755 });
+
   return script_path;
 }
 
@@ -159,9 +158,7 @@ export async function writeScript(
  *
  * @param extension_csv
  */
-export async function extensionArray(
-  extension_csv: string
-): Promise<Array<string>> {
+export async function extensionArray(extension_csv: string): Promise<Array<string>> {
   switch (extension_csv) {
     case "":
     case " ":

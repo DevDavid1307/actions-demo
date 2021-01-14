@@ -82,12 +82,7 @@ export async function getUri(
  * @param prefix
  * @param version
  */
-export async function getPharUrl(
-  domain: string,
-  tool: string,
-  prefix: string,
-  version: string
-): Promise<string> {
+export async function getPharUrl(domain: string, tool: string, prefix: string, version: string): Promise<string> {
   switch (version) {
     case "latest":
       return domain + "/" + tool + ".phar";
@@ -106,7 +101,9 @@ export async function addComposer(tools_list: string[]): Promise<string[]> {
   const regex_valid = /^composer:?($|preview$|snapshot$|v?[1-2]$|v?\d+\.\d+\.\d+[\w-]*$)/;
   const matches: string[] = tools_list.filter((tool) => regex_valid.test(tool));
   let composer = "composer";
+
   tools_list = tools_list.filter((tool) => !regex_any.test(tool));
+
   switch (true) {
     case matches[0] == undefined:
       break;
@@ -114,7 +111,9 @@ export async function addComposer(tools_list: string[]): Promise<string[]> {
       composer = matches[matches.length - 1].replace(/v(\d\S*)/, "$1");
       break;
   }
+
   tools_list.unshift(composer);
+
   return tools_list;
 }
 
@@ -148,17 +147,13 @@ export async function getComposerUrl(version: string): Promise<string> {
  */
 export async function getCleanedToolsList(tools_csv: string): Promise<string[]> {
   let tools_list: string[] = await utils.CSVArray(tools_csv);
+
   tools_list = await addComposer(tools_list);
+
   tools_list = tools_list
-    .map(function (extension: string) {
-      return extension
-        .trim()
-        .replace(
-          /-agent|behat\/|hirak\/|icanhazstring\/|laravel\/|narrowspark\/automatic-|overtrue\/|phpspec\/|robmorgan\/|symfony\//,
-          ""
-        );
-    })
+    .map(function (extension: string) { return extension.trim() })
     .filter(Boolean);
+
   return [...new Set(tools_list)];
 }
 
