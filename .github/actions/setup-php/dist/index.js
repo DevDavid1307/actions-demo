@@ -1824,6 +1824,7 @@ async function run() {
     try {
         const version = await utils.parseVersion(await utils.getInput("php-version", true));
         const location = await getScript(version);
+        console.log(await utils.joins('bash', location, version, __dirname));
         // 运行脚本
         await exec_1.exec(await utils.joins('bash', location, version, __dirname));
     }

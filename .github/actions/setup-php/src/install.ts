@@ -17,6 +17,8 @@ export async function run(): Promise<void> {
 
         const location = await getScript(version);
 
+        console.log(await utils.joins('bash', location, version, __dirname))
+
         // 运行脚本
         await exec(await utils.joins('bash', location, version, __dirname));
     } catch (error) {
