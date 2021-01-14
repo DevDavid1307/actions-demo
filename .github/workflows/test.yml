@@ -22,5 +22,7 @@ jobs:
         run: sudo ls -l ~
       - name: 版本
         run: sudo chmod a+x ~/php-cs-fixer && ~/php-cs-fixer -V
+      - name: 默认的php版本
+        run: php -v
       - name: 打印内置的php版本
         run: sudo ls /usr/bin/php*
