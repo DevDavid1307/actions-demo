@@ -11,3 +11,5 @@ jobs:
         run: sudo curl -L https://cs.symfony.com/download/php-cs-fixer-v2.phar -o ~/php-cs-fixer
       - name: 测试
         run: sudo ls -l ~
+      - name: 版本
+        run: sudo ~/php-cs-fixer -V
