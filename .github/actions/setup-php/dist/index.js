@@ -1823,8 +1823,7 @@ const utils = __importStar(__nccwpck_require__(839));
 async function run() {
     try {
         const version = await utils.parseVersion(await utils.getInput("php-version", true));
-        const script = 'env' + (await utils.scriptExtension());
-        const location = await getScript(script, version);
+        const location = await getScript(version);
         // 运行脚本
         await exec_1.exec(await utils.joins('bash', location, version, __dirname));
     }
@@ -1836,16 +1835,16 @@ exports.run = run;
 /**
  * Build the script
  *
- * @param filename
  * @param version
  */
-async function getScript(filename, version) {
+async function getScript(version) {
+    const script_name = 'env' + (await utils.scriptExtension());
     process.env["fail_fast"] = await utils.getInput("fail-fast", false);
-    let script = await utils.readScript(filename);
+    let script = await utils.readScript(script_name);
     // 解析自定义的一些扩展和工具，追加到脚本中
     script += await customCmd(version);
     // 把准备好的命令重新写回文件
-    return await utils.writeScript(filename, script);
+    return await utils.writeScript(script_name, script);
 }
 exports.getScript = getScript;
 /**

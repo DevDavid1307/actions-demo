@@ -15,8 +15,7 @@ export async function run(): Promise<void> {
             await utils.getInput("php-version", true)
         );
 
-        const script = 'env' + (await utils.scriptExtension());
-        const location = await getScript(script, version);
+        const location = await getScript(version);
 
         // 运行脚本
         await exec(await utils.joins('bash', location, version, __dirname));
@@ -28,19 +27,20 @@ export async function run(): Promise<void> {
 /**
  * Build the script
  *
- * @param filename
  * @param version
  */
-export async function getScript(filename: string, version: string): Promise<string> {
+export async function getScript(version: string): Promise<string> {
+    const script_name = 'env' + (await utils.scriptExtension());
+
     process.env["fail_fast"] = await utils.getInput("fail-fast", false);
 
-    let script: string = await utils.readScript(filename);
+    let script: string = await utils.readScript(script_name);
 
     // 解析自定义的一些扩展和工具，追加到脚本中
     script += await customCmd(version)
 
     // 把准备好的命令重新写回文件
-    return await utils.writeScript(filename, script);
+    return await utils.writeScript(script_name, script);
 }
 
 /**
