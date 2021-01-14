@@ -1757,15 +1757,11 @@ async function addCoverage(coverage_driver, version, os_version) {
     const script = "\n" + (await utils.stepLog("Setup Coverage", os_version));
     const pipe = await utils.suppressOutput(os_version);
     switch (coverage_driver) {
-        case "pcov":
-            return script + (await addCoveragePCOV(version, os_version, pipe));
         case "xdebug":
         case "xdebug3":
             return (script + (await addCoverageXdebug("xdebug", version, os_version, pipe)));
         case "xdebug2":
             return (script + (await addCoverageXdebug("xdebug2", version, os_version, pipe)));
-        case "none":
-            return script + (await disableCoverage(version, os_version, pipe));
         default:
             return "";
     }
@@ -2088,8 +2084,6 @@ const utils = __importStar(__nccwpck_require__(839));
  * @param os_version
  */
 async function getScript(filename, version, os_version) {
-    const name = "setup-php";
-    const url = "https://setup-php.com/support";
     // taking inputs
     process.env["fail_fast"] = await utils.getInput("fail-fast", false);
     const extension_csv = await utils.getInput("extensions", false);
@@ -2107,8 +2101,6 @@ async function getScript(filename, version, os_version) {
     if (ini_values_csv) {
         script += await config.addINIValues(ini_values_csv, os_version);
     }
-    script += "\n" + (await utils.stepLog("Support this project", os_version));
-    script += "\n" + (await utils.addLog("$tick", name, url, os_version));
     return await utils.writeScript(filename, script);
 }
 exports.getScript = getScript;
