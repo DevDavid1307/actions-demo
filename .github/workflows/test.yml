@@ -10,8 +10,8 @@ jobs:
       - name: 检出代码
         uses: actions/checkout@v2
       - name: 初始化环境
-        run: |
-          sudo pecl install psr
-          echo extension=psr.so | sudo tee -a $(php --ini | grep "(php.ini)" | sed -e "s|.*: s*||")/php.ini
+        uses: shivammathur/setup-php@v2
+        with:
+          extensions: psr
       - name: php扩展
         run: php -m
