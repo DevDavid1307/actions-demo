@@ -12,4 +12,4 @@ jobs:
       - name: 测试
         run: sudo ls -l ~
       - name: 版本
-        run: sudo ~/php-cs-fixer -V
+        run: sudo chmod a+x ~/php-cs-fixer && ~/php-cs-fixer -V
