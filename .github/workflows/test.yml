@@ -17,3 +17,5 @@ jobs:
         run: php -m
       - name: php版本
         run: php -v
+      - name: php-cs-fixer版本
+        run: php-cs-fixer -V
