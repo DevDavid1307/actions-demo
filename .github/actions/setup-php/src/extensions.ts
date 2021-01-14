@@ -6,17 +6,17 @@ import * as utils from "./utils";
  * @param extension_csv
  * @param version
  */
-export async function addExtensionLinux(
-  extension_csv: string,
-  version: string
-): Promise<string> {
+export async function addExtensionLinux(extension_csv: string, version: string): Promise<string> {
   const extensions: Array<string> = await utils.extensionArray(extension_csv);
+
   let add_script = "\n";
   let remove_script = "";
+
   await utils.asyncForEach(extensions, async function (extension: string) {
     const version_extension: string = version + extension;
     const [ext_name, ext_version]: string[] = extension.split("-");
     const ext_prefix = await utils.getExtensionPrefix(ext_name);
+
     switch (true) {
       // Match :extension
       case /^:/.test(ext_name):
@@ -27,15 +27,6 @@ export async function addExtensionLinux(
       ):
       case /^pdo_oci$|^oci8$/.test(extension):
       case /^(5\.6|7\.[0-4]|8\.0)intl-[\d]+\.[\d]+$/.test(version_extension):
-      case /^(5\.[3-6]|7\.[0-4])(ioncube|geos)$/.test(version_extension):
-      case /^7\.[0-3]phalcon3$|^7\.[2-4]phalcon4$/.test(version_extension):
-      case /^((5\.6)|(7\.[0-4]))(gearman|couchbase)$/.test(version_extension):
-        add_script += await utils.customPackage(
-          ext_name,
-          "ext",
-          extension,
-        );
-        return;
       // match pre-release versions. For example - xdebug-beta
       case /.*-(stable|beta|alpha|devel|snapshot|rc|preview)/.test(
         version_extension
@@ -74,10 +65,6 @@ export async function addExtensionLinux(
         extension = extension.replace(/pdo[_-]|3/, "");
         add_script += "\nadd_pdo_extension " + extension;
         return;
-      // match sqlite
-      case /^sqlite$/.test(extension):
-        extension = "sqlite3";
-        break;
       default:
         break;
     }

@@ -1730,11 +1730,6 @@ async function addExtensionLinux(extension_csv, version) {
             case /^((5\.[3-6])|(7\.[0-2]))pdo_cubrid$|^((5\.[3-6])|(7\.[0-4]))cubrid$/.test(version_extension):
             case /^pdo_oci$|^oci8$/.test(extension):
             case /^(5\.6|7\.[0-4]|8\.0)intl-[\d]+\.[\d]+$/.test(version_extension):
-            case /^(5\.[3-6]|7\.[0-4])(ioncube|geos)$/.test(version_extension):
-            case /^7\.[0-3]phalcon3$|^7\.[2-4]phalcon4$/.test(version_extension):
-            case /^((5\.6)|(7\.[0-4]))(gearman|couchbase)$/.test(version_extension):
-                add_script += await utils.customPackage(ext_name, "ext", extension);
-                return;
             // match pre-release versions. For example - xdebug-beta
             case /.*-(stable|beta|alpha|devel|snapshot|rc|preview)/.test(version_extension):
                 add_script += await utils.joins("\nadd_unstable_extension", ext_name, ext_version, ext_prefix);
@@ -1756,10 +1751,6 @@ async function addExtensionLinux(extension_csv, version) {
                 extension = extension.replace(/pdo[_-]|3/, "");
                 add_script += "\nadd_pdo_extension " + extension;
                 return;
-            // match sqlite
-            case /^sqlite$/.test(extension):
-                extension = "sqlite3";
-                break;
             default:
                 break;
         }
@@ -1898,15 +1889,15 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.chooseTool = exports.addTools = exports.addArchive = exports.getCleanedToolsList = exports.getComposerUrl = exports.addComposer = exports.getPharUrl = exports.getCodeceptionUri = exports.getCodeceptionUriBuilder = exports.getUri = exports.parseTool = exports.getToolVersion = void 0;
+exports.chooseTool = exports.addTools = exports.addArchive = exports.getCleanedToolsList = exports.getComposerUrl = exports.addComposer = exports.getPharUrl = exports.getUri = exports.parseTool = exports.getToolVersion = void 0;
 const utils = __importStar(__nccwpck_require__(839));
 /**
- * Function to get tool version
+ * 解析版本，根据标准化规则
  *
+ * @see https://semver.org/
  * @param version
  */
 async function getToolVersion(version) {
-    // semver_regex - https://semver.org/
     const semver_regex = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$/;
     const composer_regex = /^stable$|^preview$|^snapshot$|^v?[1|2]$/;
     version = version.replace(/[><=^]*/, "");
@@ -1967,77 +1958,6 @@ async function getUri(tool, extension, version, prefix, version_prefix, verb) {
     }
 }
 exports.getUri = getUri;
-/**
- * Helper function to get the codeception url
- *
- * @param version
- * @param suffix
- */
-async function getCodeceptionUriBuilder(version, suffix) {
-    return ["releases", version, suffix, "codecept.phar"]
-        .filter(Boolean)
-        .join("/");
-}
-exports.getCodeceptionUriBuilder = getCodeceptionUriBuilder;
-/**
- * Function to get the codeception url
- *
- * @param version
- * @param php_version
- */
-async function getCodeceptionUri(version, php_version) {
-    const codecept = await getCodeceptionUriBuilder(version, "");
-    const codecept54 = await getCodeceptionUriBuilder(version, "php54");
-    const codecept56 = await getCodeceptionUriBuilder(version, "php56");
-    // Refer to https://codeception.com/builds
-    switch (true) {
-        case /latest/.test(version):
-            switch (true) {
-                case /5\.6|7\.[0|1]/.test(php_version):
-                    return "php56/codecept.phar";
-                case /7\.[2-4]/.test(php_version):
-                default:
-                    return "codecept.phar";
-            }
-        case /(^[4-9]|\d{2,})\..*/.test(version):
-            switch (true) {
-                case /5\.6|7\.[0|1]/.test(php_version):
-                    return codecept56;
-                case /7\.[2-4]/.test(php_version):
-                default:
-                    return codecept;
-            }
-        case /(^2\.[4-5]\.\d+|^3\.[0-1]\.\d+).*/.test(version):
-            switch (true) {
-                case /5\.6/.test(php_version):
-                    return codecept54;
-                case /7\.[0-4]/.test(php_version):
-                default:
-                    return codecept;
-            }
-        case /^2\.3\.\d+.*/.test(version):
-            switch (true) {
-                case /5\.[4-6]/.test(php_version):
-                    return codecept54;
-                case /^7\.[0-4]$/.test(php_version):
-                default:
-                    return codecept;
-            }
-        case /(^2\.(1\.([6-9]|\d{2,}))|^2\.2\.\d+).*/.test(version):
-            switch (true) {
-                case /5\.[4-5]/.test(php_version):
-                    return codecept54;
-                case /5.6|7\.[0-4]/.test(php_version):
-                default:
-                    return codecept;
-            }
-        case /(^2\.(1\.[0-5]|0\.\d+)|^1\.[6-8]\.\d+).*/.test(version):
-            return codecept;
-        default:
-            return codecept;
-    }
-}
-exports.getCodeceptionUri = getCodeceptionUri;
 /**
  * Function to get the phar url in domain/tool-version.phar format
  *
@@ -2142,6 +2062,11 @@ async function addTools(tools_csv) {
     return script;
 }
 exports.addTools = addTools;
+/**
+ * 判断需要添加的tool，返回下载命令
+ *
+ * @param tool_data
+ */
 async function chooseTool(tool_data) {
     const tool = tool_data.name;
     const version = tool_data.version;

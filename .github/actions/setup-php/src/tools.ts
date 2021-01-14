@@ -1,12 +1,12 @@
 import * as utils from "./utils";
 
 /**
- * Function to get tool version
+ * 解析版本，根据标准化规则
  *
+ * @see https://semver.org/
  * @param version
  */
 export async function getToolVersion(version: string): Promise<string> {
-  // semver_regex - https://semver.org/
   const semver_regex = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$/;
   const composer_regex = /^stable$|^preview$|^snapshot$|^v?[1|2]$/;
   version = version.replace(/[><=^]*/, "");
@@ -26,9 +26,7 @@ export async function getToolVersion(version: string): Promise<string> {
  *
  * @param release
  */
-export async function parseTool(
-  release: string
-): Promise<{ name: string; version: string }> {
+export async function parseTool(release: string): Promise<{ name: string; version: string }> {
   const parts: string[] = release.split(":");
   const tool: string = parts[0];
   const version: string | undefined = parts[1];
@@ -73,83 +71,6 @@ export async function getUri(
       return [prefix, verb, version_prefix + version, tool + extension]
         .filter(Boolean)
         .join("/");
-  }
-}
-
-/**
- * Helper function to get the codeception url
- *
- * @param version
- * @param suffix
- */
-export async function getCodeceptionUriBuilder(
-  version: string,
-  suffix: string
-): Promise<string> {
-  return ["releases", version, suffix, "codecept.phar"]
-    .filter(Boolean)
-    .join("/");
-}
-
-/**
- * Function to get the codeception url
- *
- * @param version
- * @param php_version
- */
-export async function getCodeceptionUri(
-  version: string,
-  php_version: string
-): Promise<string> {
-  const codecept: string = await getCodeceptionUriBuilder(version, "");
-  const codecept54: string = await getCodeceptionUriBuilder(version, "php54");
-  const codecept56: string = await getCodeceptionUriBuilder(version, "php56");
-  // Refer to https://codeception.com/builds
-  switch (true) {
-    case /latest/.test(version):
-      switch (true) {
-        case /5\.6|7\.[0|1]/.test(php_version):
-          return "php56/codecept.phar";
-        case /7\.[2-4]/.test(php_version):
-        default:
-          return "codecept.phar";
-      }
-    case /(^[4-9]|\d{2,})\..*/.test(version):
-      switch (true) {
-        case /5\.6|7\.[0|1]/.test(php_version):
-          return codecept56;
-        case /7\.[2-4]/.test(php_version):
-        default:
-          return codecept;
-      }
-    case /(^2\.[4-5]\.\d+|^3\.[0-1]\.\d+).*/.test(version):
-      switch (true) {
-        case /5\.6/.test(php_version):
-          return codecept54;
-        case /7\.[0-4]/.test(php_version):
-        default:
-          return codecept;
-      }
-    case /^2\.3\.\d+.*/.test(version):
-      switch (true) {
-        case /5\.[4-6]/.test(php_version):
-          return codecept54;
-        case /^7\.[0-4]$/.test(php_version):
-        default:
-          return codecept;
-      }
-    case /(^2\.(1\.([6-9]|\d{2,}))|^2\.2\.\d+).*/.test(version):
-      switch (true) {
-        case /5\.[4-5]/.test(php_version):
-          return codecept54;
-        case /5.6|7\.[0-4]/.test(php_version):
-        default:
-          return codecept;
-      }
-    case /(^2\.(1\.[0-5]|0\.\d+)|^1\.[6-8]\.\d+).*/.test(version):
-      return codecept;
-    default:
-      return codecept;
   }
 }
 
@@ -225,9 +146,7 @@ export async function getComposerUrl(version: string): Promise<string> {
  *
  * @param tools_csv
  */
-export async function getCleanedToolsList(
-  tools_csv: string
-): Promise<string[]> {
+export async function getCleanedToolsList(tools_csv: string): Promise<string[]> {
   let tools_list: string[] = await utils.CSVArray(tools_csv);
   tools_list = await addComposer(tools_list);
   tools_list = tools_list
@@ -250,11 +169,7 @@ export async function getCleanedToolsList(
  * @param url
  * @param ver_param
  */
-export async function addArchive(
-  tool: string,
-  url: string,
-  ver_param: string
-): Promise<string> {
+export async function addArchive(tool: string, url: string, ver_param: string): Promise<string> {
   return (
     (await utils.getCommand("tool")) +
     (await utils.joins(url, tool, ver_param))
@@ -274,13 +189,17 @@ export async function addTools(tools_csv: string): Promise<string> {
   await utils.asyncForEach(tools_list, async function (release: string) {
     const tool_data: { name: string; version: string } = await parseTool(release);
 
-
     script += "\n" + await chooseTool(tool_data);
   });
 
   return script;
 }
 
+/**
+ * 判断需要添加的tool，返回下载命令
+ *
+ * @param tool_data
+ */
 export async function chooseTool(tool_data: {name: string, version: string}): Promise<string> {
     const tool: string = tool_data.name;
     const version: string = tool_data.version;
