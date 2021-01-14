@@ -135,8 +135,6 @@ export async function addCoverage(
     "\n" + (await utils.stepLog("Setup Coverage", os_version));
   const pipe: string = await utils.suppressOutput(os_version);
   switch (coverage_driver) {
-    case "pcov":
-      return script + (await addCoveragePCOV(version, os_version, pipe));
     case "xdebug":
     case "xdebug3":
       return (
@@ -146,8 +144,6 @@ export async function addCoverage(
       return (
         script + (await addCoverageXdebug("xdebug2", version, os_version, pipe))
       );
-    case "none":
-      return script + (await disableCoverage(version, os_version, pipe));
     default:
       return "";
   }

@@ -18,8 +18,6 @@ export async function getScript(
   version: string,
   os_version: string
 ): Promise<string> {
-  const name = "setup-php";
-  const url = "https://setup-php.com/support";
   // taking inputs
   process.env["fail_fast"] = await utils.getInput("fail-fast", false);
   const extension_csv: string = await utils.getInput("extensions", false);
@@ -39,9 +37,6 @@ export async function getScript(
   if (ini_values_csv) {
     script += await config.addINIValues(ini_values_csv, os_version);
   }
-
-  script += "\n" + (await utils.stepLog("Support this project", os_version));
-  script += "\n" + (await utils.addLog("$tick", name, url, os_version));
 
   return await utils.writeScript(filename, script);
 }
