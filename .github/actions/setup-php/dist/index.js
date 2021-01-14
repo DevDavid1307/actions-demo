@@ -2112,7 +2112,6 @@ async function run() {
         const version = await utils.parseVersion(await utils.getInput("php-version", true));
         const os_version = process.platform;
         const tool = await utils.scriptTool(os_version);
-        console.log(await utils.scriptExtension(os_version));
         const script = os_version + (await utils.scriptExtension(os_version));
         const location = await getScript(script, version, os_version);
         await exec_1.exec(await utils.joins(tool, location, version, __dirname));
@@ -2683,18 +2682,8 @@ exports.color = color;
  * @param log_type
  */
 async function log(message, os_version, log_type) {
-    switch (os_version) {
-        case "win32":
-            return ('printf "\\033[' +
-                (await color(log_type)) +
-                ";1m" +
-                message +
-                ' \\033[0m"');
-        case "linux":
-        case "darwin":
-        default:
-            return ('echo "\\033[' + (await color(log_type)) + ";1m" + message + '\\033[0m"');
-    }
+    // todo 删除了版本
+    return 'echo "\\033[' + (await color(log_type)) + ";1m" + message + '\\033[0m"';
 }
 exports.log = log;
 /**
@@ -2704,15 +2693,8 @@ exports.log = log;
  * @param os_version
  */
 async function stepLog(message, os_version) {
-    switch (os_version) {
-        case "win32":
-            return 'Step-Log "' + message + '"';
-        case "linux":
-        case "darwin":
-            return 'step_log "' + message + '"';
-        default:
-            return await log("Platform " + os_version + " is not supported", os_version, "error");
-    }
+    // todo 删除了版本
+    return 'step_log "' + message + '"';
 }
 exports.stepLog = stepLog;
 /**
@@ -2723,15 +2705,8 @@ exports.stepLog = stepLog;
  * @param os_version
  */
 async function addLog(mark, subject, message, os_version) {
-    switch (os_version) {
-        case "win32":
-            return 'Add-Log "' + mark + '" "' + subject + '" "' + message + '"';
-        case "linux":
-        case "darwin":
-            return 'add_log "' + mark + '" "' + subject + '" "' + message + '"';
-        default:
-            return await log("Platform " + os_version + " is not supported", os_version, "error");
-    }
+    // todo 删除了版本
+    return 'add_log "' + mark + '" "' + subject + '" "' + message + '"';
 }
 exports.addLog = addLog;
 /**
@@ -2820,15 +2795,8 @@ exports.getExtensionPrefix = getExtensionPrefix;
  * @param os_version
  */
 async function suppressOutput(os_version) {
-    switch (os_version) {
-        case "win32":
-            return " >$null 2>&1";
-        case "linux":
-        case "darwin":
-            return " >/dev/null 2>&1";
-        default:
-            return await log("Platform " + os_version + " is not supported", os_version, "error");
-    }
+    // todo 删除了版本
+    return " >/dev/null 2>&1";
 }
 exports.suppressOutput = suppressOutput;
 /**
@@ -2851,15 +2819,8 @@ exports.getUnsupportedLog = getUnsupportedLog;
  * @param suffix
  */
 async function getCommand(os_version, suffix) {
-    switch (os_version) {
-        case "linux":
-        case "darwin":
-            return "add_" + suffix + " ";
-        case "win32":
-            return "Add-" + suffix.charAt(0).toUpperCase() + suffix.slice(1) + " ";
-        default:
-            return await log("Platform " + os_version + " is not supported", os_version, "error");
-    }
+    // todo 删除了版本
+    return "add_" + suffix + " ";
 }
 exports.getCommand = getCommand;
 /**
@@ -2877,15 +2838,8 @@ exports.joins = joins;
  * @param os_version
  */
 async function scriptExtension(os_version) {
-    switch (os_version) {
-        case "win32":
-            return ".ps1";
-        case "linux":
-        case "darwin":
-            return ".sh";
-        default:
-            return await log("Platform " + os_version + " is not supported", os_version, "error");
-    }
+    // todo 删除了版本
+    return ".sh";
 }
 exports.scriptExtension = scriptExtension;
 /**

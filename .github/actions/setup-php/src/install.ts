@@ -53,7 +53,6 @@ export async function run(): Promise<void> {
     );
     const os_version: string = process.platform;
     const tool = await utils.scriptTool(os_version);
-    console.log(await utils.scriptExtension(os_version))
     const script = os_version + (await utils.scriptExtension(os_version));
     const location = await getScript(script, version, os_version);
 

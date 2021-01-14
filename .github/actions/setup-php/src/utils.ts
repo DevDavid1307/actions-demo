@@ -109,23 +109,8 @@ export async function log(
   os_version: string,
   log_type: string
 ): Promise<string> {
-  switch (os_version) {
-    case "win32":
-      return (
-        'printf "\\033[' +
-        (await color(log_type)) +
-        ";1m" +
-        message +
-        ' \\033[0m"'
-      );
-
-    case "linux":
-    case "darwin":
-    default:
-      return (
-        'echo "\\033[' + (await color(log_type)) + ";1m" + message + '\\033[0m"'
-      );
-  }
+    // todo 删除了版本
+    return 'echo "\\033[' + (await color(log_type)) + ";1m" + message + '\\033[0m"'
 }
 
 /**
@@ -138,19 +123,8 @@ export async function stepLog(
   message: string,
   os_version: string
 ): Promise<string> {
-  switch (os_version) {
-    case "win32":
-      return 'Step-Log "' + message + '"';
-    case "linux":
-    case "darwin":
-      return 'step_log "' + message + '"';
-    default:
-      return await log(
-        "Platform " + os_version + " is not supported",
-        os_version,
-        "error"
-      );
-  }
+    // todo 删除了版本
+    return 'step_log "' + message + '"';
 }
 
 /**
@@ -166,19 +140,8 @@ export async function addLog(
   message: string,
   os_version: string
 ): Promise<string> {
-  switch (os_version) {
-    case "win32":
-      return 'Add-Log "' + mark + '" "' + subject + '" "' + message + '"';
-    case "linux":
-    case "darwin":
-      return 'add_log "' + mark + '" "' + subject + '" "' + message + '"';
-    default:
-      return await log(
-        "Platform " + os_version + " is not supported",
-        os_version,
-        "error"
-      );
-  }
+    // todo 删除了版本
+    return 'add_log "' + mark + '" "' + subject + '" "' + message + '"';
 }
 
 /**
@@ -275,19 +238,8 @@ export async function getExtensionPrefix(extension: string): Promise<string> {
  * @param os_version
  */
 export async function suppressOutput(os_version: string): Promise<string> {
-  switch (os_version) {
-    case "win32":
-      return " >$null 2>&1";
-    case "linux":
-    case "darwin":
-      return " >/dev/null 2>&1";
-    default:
-      return await log(
-        "Platform " + os_version + " is not supported",
-        os_version,
-        "error"
-      );
-  }
+    // todo 删除了版本
+    return " >/dev/null 2>&1";
 }
 
 /**
@@ -324,19 +276,8 @@ export async function getCommand(
   os_version: string,
   suffix: string
 ): Promise<string> {
-  switch (os_version) {
-    case "linux":
-    case "darwin":
-      return "add_" + suffix + " ";
-    case "win32":
-      return "Add-" + suffix.charAt(0).toUpperCase() + suffix.slice(1) + " ";
-    default:
-      return await log(
-        "Platform " + os_version + " is not supported",
-        os_version,
-        "error"
-      );
-  }
+    // todo 删除了版本
+    return "add_" + suffix + " ";
 }
 
 /**
@@ -354,19 +295,8 @@ export async function joins(...str: string[]): Promise<string> {
  * @param os_version
  */
 export async function scriptExtension(os_version: string): Promise<string> {
-  switch (os_version) {
-    case "win32":
-      return ".ps1";
-    case "linux":
-    case "darwin":
-      return ".sh";
-    default:
-      return await log(
-        "Platform " + os_version + " is not supported",
-        os_version,
-        "error"
-      );
-  }
+    // todo 删除了版本
+    return ".sh";
 }
 
 /**
