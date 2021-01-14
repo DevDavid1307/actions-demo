@@ -269,14 +269,9 @@ export async function getUnsupportedLog(
 /**
  * Function to get command to setup tools
  *
- * @param os_version
  * @param suffix
  */
-export async function getCommand(
-  os_version: string,
-  suffix: string
-): Promise<string> {
-    // todo 删除了版本
+export async function getCommand(suffix: string): Promise<string> {
     return "add_" + suffix + " ";
 }
 
@@ -291,22 +286,10 @@ export async function joins(...str: string[]): Promise<string> {
 
 /**
  * Function to get script extensions
- *
- * @param os_version
  */
-export async function scriptExtension(os_version: string): Promise<string> {
+export async function scriptExtension(): Promise<string> {
     // todo 删除了版本
     return ".sh";
-}
-
-/**
- * Function to get script tool
- *
- * @param os_version
- */
-export async function scriptTool(os_version: string): Promise<string> {
-    // todo 删除了版本
-    return "bash";
 }
 
 /**
@@ -315,20 +298,18 @@ export async function scriptTool(os_version: string): Promise<string> {
  * @param pkg
  * @param type
  * @param version
- * @param os_version
  */
 export async function customPackage(
   pkg: string,
   type: string,
   version: string,
-  os_version: string
 ): Promise<string> {
   const pkg_name: string = pkg.replace(/\d+|pdo[_-]/, "");
-  const script_extension: string = await scriptExtension(os_version);
+  const script_extension: string = await scriptExtension();
   const script: string = path.join(
     __dirname,
     "../src/scripts/" + type + "/" + pkg_name + script_extension
   );
-  const command: string = await getCommand(os_version, pkg_name);
+  const command: string = await getCommand(pkg_name);
   return "\n. " + script + "\n" + command + version;
 }

@@ -29,62 +29,6 @@ export async function addCoverageXdebug(
 }
 
 /**
- * Function to setup PCOV
- *
- * @param version
- * @param os_version
- * @param pipe
- */
-export async function addCoveragePCOV(
-  version: string,
-  os_version: string,
-  pipe: string
-): Promise<string> {
-  let script = "\n";
-  switch (true) {
-    default:
-      script +=
-        (await extensions.addExtension("pcov", version, os_version, true)) +
-        pipe +
-        "\n";
-      script +=
-        (await config.addINIValues("pcov.enabled=1", os_version, true)) + "\n";
-
-      // add command to disable xdebug and enable pcov
-      switch (os_version) {
-        case "linux":
-        case "darwin":
-          script += "remove_extension xdebug" + pipe + "\n";
-          break;
-        case "win32":
-          script += "Remove-Extension xdebug" + pipe + "\n";
-          break;
-      }
-
-      // success
-      script += await utils.addLog(
-        "$tick",
-        "coverage: pcov",
-        "PCOV enabled as coverage driver",
-        os_version
-      );
-      // version is not supported
-      break;
-
-    case /5\.[3-6]|7\.0/.test(version):
-      script += await utils.addLog(
-        "$cross",
-        "pcov",
-        "PHP 7.1 or newer is required",
-        os_version
-      );
-      break;
-  }
-
-  return script;
-}
-
-/**
  * Function to disable Xdebug and PCOV
  *
  * @param version

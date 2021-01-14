@@ -154,51 +154,6 @@ export async function getCodeceptionUri(
 }
 
 /**
- * Helper function to get script to setup phive
- *
- * @param version
- * @param php_version
- * @param os_version
- */
-export async function addPhive(
-  version: string,
-  php_version: string,
-  os_version: string
-): Promise<string> {
-  switch (true) {
-    case /5\.[3-5]/.test(php_version):
-      return await utils.addLog(
-        "$cross",
-        "phive",
-        "Phive is not supported on PHP " + php_version,
-        os_version
-      );
-    case /5\.6|7\.0/.test(php_version):
-      version = version.replace("latest", "0.12.1");
-      break;
-    case /7\.1/.test(php_version):
-      version = version.replace("latest", "0.13.5");
-      break;
-  }
-  switch (version) {
-    case "latest":
-      return (
-        (await utils.getCommand(os_version, "tool")) +
-        "https://phar.io/releases/phive.phar phive status"
-      );
-    default:
-      return (
-        (await utils.getCommand(os_version, "tool")) +
-        "https://github.com/phar-io/phive/releases/download/" +
-        version +
-        "/phive-" +
-        version +
-        ".phar phive status"
-      );
-  }
-}
-
-/**
  * Function to get the phar url in domain/tool-version.phar format
  *
  * @param domain
@@ -217,101 +172,6 @@ export async function getPharUrl(
       return domain + "/" + tool + ".phar";
     default:
       return domain + "/" + tool + "-" + prefix + version + ".phar";
-  }
-}
-
-/**
- * Function to get blackfire player url for a PHP version.
- *
- * @param version
- * @param php_version
- */
-export async function getBlackfirePlayerUrl(
-  version: string,
-  php_version: string
-): Promise<string> {
-  switch (true) {
-    case /5\.[5-6]|7\.0/.test(php_version) && version == "latest":
-      version = "1.9.3";
-      break;
-    default:
-      break;
-  }
-  return await getPharUrl(
-    "https://get.blackfire.io",
-    "blackfire-player",
-    "v",
-    version
-  );
-}
-
-/**
- * Function to get the Deployer url
- *
- * @param version
- */
-export async function getDeployerUrl(version: string): Promise<string> {
-  const deployer = "https://deployer.org";
-  switch (version) {
-    case "latest":
-      return deployer + "/deployer.phar";
-    default:
-      return deployer + "/releases/v" + version + "/deployer.phar";
-  }
-}
-
-/**
- * Function to get the Deployer url
- *
- * @param version
- * @param os_version
- */
-export async function getSymfonyUri(
-  version: string,
-  os_version: string
-): Promise<string> {
-  let filename = "";
-  switch (os_version) {
-    case "linux":
-    case "darwin":
-      filename = "symfony_" + os_version + "_amd64";
-      break;
-    case "win32":
-      filename = "symfony_windows_amd64.exe";
-      break;
-    default:
-      return await utils.log(
-        "Platform " + os_version + " is not supported",
-        os_version,
-        "error"
-      );
-  }
-  switch (version) {
-    case "latest":
-      return "releases/latest/download/" + filename;
-    default:
-      return "releases/download/v" + version + "/" + filename;
-  }
-}
-
-/**
- * Function to get the WP-CLI url
- *
- * @param version
- */
-export async function getWpCliUrl(version: string): Promise<string> {
-  switch (version) {
-    case "latest":
-      return "wp-cli/builds/blob/gh-pages/phar/wp-cli.phar?raw=true";
-    default:
-      return await getUri(
-        "wp-cli",
-        "-" + version + ".phar",
-        version,
-        "wp-cli/wp-cli/releases",
-        "v",
-        "download"
-      );
   }
 }
 
@@ -388,83 +248,29 @@ export async function getCleanedToolsList(
  *
  * @param tool
  * @param url
- * @param os_version
  * @param ver_param
  */
 export async function addArchive(
   tool: string,
   url: string,
-  os_version: string,
   ver_param: string
 ): Promise<string> {
   return (
-    (await utils.getCommand(os_version, "tool")) +
+    (await utils.getCommand("tool")) +
     (await utils.joins(url, tool, ver_param))
   );
-}
-
-/**
- * Function to get the script to setup php-config and phpize
- *
- * @param tool
- * @param os_version
- */
-export async function addDevTools(
-  tool: string,
-  os_version: string
-): Promise<string> {
-  switch (os_version) {
-    case "linux":
-    case "darwin":
-      return "add_devtools " + tool;
-    case "win32":
-      return await utils.addLog(
-        "$tick",
-        tool,
-        tool + " is not a windows tool",
-        "win32"
-      );
-    default:
-      return await utils.log(
-        "Platform " + os_version + " is not supported",
-        os_version,
-        "error"
-      );
-  }
-}
-
-/**
- * Helper function to get script to setup a tool using composer
- *
- * @param tool
- * @param release
- * @param prefix
- * @param os_version
- */
-export async function addPackage(
-  tool: string,
-  release: string,
-  prefix: string,
-  os_version: string
-): Promise<string> {
-  const tool_command = await utils.getCommand(os_version, "composertool");
-  return tool_command + tool + " " + release + " " + prefix;
 }
 
 /**
  * Setup tools
  *
  * @param tools_csv
- * @param php_version
  * @param os_version
  */
-export async function addTools(
-  tools_csv: string,
-  php_version: string,
-  os_version: string
-): Promise<string> {
+export async function addTools(tools_csv: string, os_version: string): Promise<string> {
   let script = "\n" + (await utils.stepLog("Setup Tools", os_version));
   const tools_list: Array<string> = await getCleanedToolsList(tools_csv);
+
   await utils.asyncForEach(tools_list, async function (release: string) {
     const tool_data: { name: string; version: string } = await parseTool(
       release
@@ -485,16 +291,16 @@ export async function addTools(
     switch (tool) {
       case "composer":
         url = await getComposerUrl(version);
-        script += await addArchive("composer", url, os_version, version);
+        script += await addArchive("composer", url, version);
         break;
       case "php-cs-fixer":
         uri = await getUri(tool, ".phar", version, "releases", "v", "download");
         url = github + "FriendsOfPHP/PHP-CS-Fixer/" + uri;
-        script += await addArchive(tool, url, os_version, '"-V"');
+        script += await addArchive(tool, url, '"-V"');
         break;
       case "phpunit":
         url = await getPharUrl("https://phar.phpunit.de", tool, "", version);
-        script += await addArchive(tool, url, os_version, '"--version"');
+        script += await addArchive(tool, url, '"--version"');
         break;
       default:
         script += await utils.addLog(
