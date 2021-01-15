@@ -38,7 +38,9 @@ add_pecl_extension() {
 
     # 检测扩展和添加配置
     if ! check_extension "$1" && [ -e "${ext_dir:?}/$1.so" ]; then
-      echo "$2=${ext_dir:?}/$1.so" | sudo tee -a "${pecl_file:-${ini_file[@]}}" >/dev/null
+        echo "添加配置"
+
+        echo "$2=${ext_dir:?}/$1.so" | sudo tee -a "${pecl_file:-${ini_file[@]}}" >/dev/null
     fi
 
     # 安装
