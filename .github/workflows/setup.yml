@@ -1,11 +1,10 @@
-name: 测试
+name: php环境
 
 on: push
 
 jobs:
-  demo:
+  setup:
     runs-on: ubuntu-20.04
-    name: 测试
     steps:
       - name: 拉取分支
         uses: actions/checkout@v2
