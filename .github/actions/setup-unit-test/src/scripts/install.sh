@@ -27,6 +27,16 @@ setup() {
     add_log "${tick:?}" "PHP" "${status} PHP ${version}"
 }
 
+# add_pecl_extension 扩展名称 版本
+add_pecl_extension() {
+    step_log "通过Pecl安装扩展"
+}
+
+# add_tool 下载链接 工具名称
+add_tool() {
+    step_log "添加工具"
+}
+
 # 切换php版本
 switch_version() {
   for tool in pear pecl php phar phar.phar php-cgi php-config phpize phpdbg; do

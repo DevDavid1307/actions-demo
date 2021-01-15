@@ -1572,7 +1572,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.run = void 0;
+exports.getScript = exports.run = void 0;
 const exec = __importStar(__nccwpck_require__(6));
 const utils = __importStar(__nccwpck_require__(839));
 const core = __importStar(__nccwpck_require__(341));
@@ -1582,8 +1582,14 @@ async function run() {
     const pecl = core.getInput("pecl-ext");
     const extensions = core.getInput("extensions");
     const tools = core.getInput("tools");
+    // todo 拼装扩展、工具的安装命令
+    const file_name = "install.sh";
+    const script_file = path_1.default.join(__dirname, "../src/scripts/" + file_name);
+    let script = await utils.readScript(script_file);
+    script += await getScript();
+    const install_script_path = await utils.writeScript(file_name, script);
     const params = [
-        path_1.default.join(__dirname, "../src/scripts/install.sh"),
+        install_script_path,
         version,
         __dirname,
         pecl,
@@ -1593,6 +1599,10 @@ async function run() {
     await exec.exec('bash', params);
 }
 exports.run = run;
+async function getScript() {
+    return "\nadd_pecl_extension psr";
+}
+exports.getScript = getScript;
 run().catch(r => console.log(r));
 
 
@@ -1622,9 +1632,10 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.parseVersion = exports.readScript = void 0;
+exports.writeScript = exports.parseVersion = exports.readScript = void 0;
 const fs = __importStar(__nccwpck_require__(747));
 const path = __importStar(__nccwpck_require__(622));
+const core = __importStar(__nccwpck_require__(341));
 async function readScript(filename) {
     return fs.readFileSync(path.join(__dirname, "../src/scripts/" + filename), "utf8");
 }
@@ -1648,6 +1659,19 @@ async function parseVersion(version) {
     }
 }
 exports.parseVersion = parseVersion;
+/**
+ * 把拼装好的shell脚本写入一个临时目录
+ *
+ * @param filename
+ * @param script
+ */
+async function writeScript(filename, script) {
+    const runner_dir = core.getInput("RUNNER_TOOL_CACHE");
+    const script_path = path.join(runner_dir, filename);
+    fs.writeFileSync(script_path, script, { mode: 0o755 });
+    return script_path;
+}
+exports.writeScript = writeScript;
 
 
 /***/ }),

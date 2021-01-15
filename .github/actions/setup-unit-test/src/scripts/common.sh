@@ -22,5 +22,5 @@ add_log() {
 
 # 返回具体的php版本
 php_semver() {
-  php"$version" -v | grep -Eo -m 1 "[0-9]+\.[0-9]+\.[0-9]+" | head -n 1
+  php"${version:?}" -v | grep -Eo -m 1 "[0-9]+\.[0-9]+\.[0-9]+" | head -n 1
 }
