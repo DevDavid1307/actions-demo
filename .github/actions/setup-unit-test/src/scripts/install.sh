@@ -22,7 +22,7 @@ setup() {
     semver=$(php_semver) # 具体的php版本
     ext_dir=$(php -i | grep "extension_dir => /" | sed -e "s|.*=> s*||") # 扩展目录
 
-    echo "$semver" "$ext_dir"
+    echo "$semver" "$ext_dir" "$pecl" "$ext" "$tools"
 
     add_log "${tick:?}" "PHP" "${status} PHP ${version}"
 }
@@ -41,6 +41,9 @@ switch_version() {
 # 获取参数
 version=$1
 dist=$2
+pecl=$3
+ext=$4
+tools=$5
 
 # 加载common.sh
 . "${dist}"/../src/scripts/common.sh

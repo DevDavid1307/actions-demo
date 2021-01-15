@@ -6,14 +6,19 @@ branding:
   icon: 'play-circle'
 inputs:
   php-version:
-    description: 'Setup PHP version.'
+    description: 'PHP版本'
     default: '7.4'
     required: true
   extensions:
-    description: 'Setup PHP extensions.'
+    description: '需要开启的扩展'
+    required: false
+  pecl-ext:
+    description: '需要通过pecl安装的扩展'
+    default: 'psr'
     required: false
   tools:
-    description: 'Setup popular tools globally.'
+    description: '一些工具，比如php-cs-fixer，暂时只支持php-cs-fixer'
+    default: 'php-cs-fixer'
     required: false
 runs:
   using: 'node12'

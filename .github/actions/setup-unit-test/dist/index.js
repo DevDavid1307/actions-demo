@@ -1579,6 +1579,17 @@ const core = __importStar(__nccwpck_require__(341));
 const path_1 = __importDefault(__nccwpck_require__(622));
 async function run() {
     const version = await utils.parseVersion(core.getInput("php-version"));
+    const pecl = core.getInput("pecl-ext");
+    const extensions = core.getInput("extensions");
+    const tools = core.getInput("tools");
+    const params = [
+        path_1.default.join(__dirname, "../src/scripts/install.sh"),
+        version,
+        __dirname,
+        pecl,
+        extensions,
+        tools
+    ];
     await exec.exec('bash', [path_1.default.join(__dirname, "../src/scripts/install.sh"), version, __dirname]);
 }
 exports.run = run;
