@@ -41,11 +41,9 @@ add_pecl_extension() {
     # 添加到php.ini
     ini_dir=$(php --ini | grep "(php.ini)" | sed -e "s|.*: s*||")
 
-    sudo ls "$ini_dir"
-
     echo "extension=$ext.so" | sudo tee -a "${ini_dir}/php.ini" >/dev/null
 
-    php -m
+    add_log "${tick:?}" "$ext" "安装成功"
 }
 
 # add_tool 下载链接 工具名称
