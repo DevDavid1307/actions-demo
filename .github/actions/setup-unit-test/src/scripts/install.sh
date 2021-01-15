@@ -36,6 +36,8 @@ add_pecl_extension() {
     ext=$1
     version=$2
 
+    echo "$2=${ext_dir:?}/$1.so"
+
     # 检测扩展和添加配置
     if ! check_extension "$1" && [ -e "${ext_dir:?}/$1.so" ]; then
         echo "添加配置"
@@ -47,8 +49,6 @@ add_pecl_extension() {
     pecl_install "$ext-$version"
 
     echo "添加扩展: $ext"
-
-    php -m
 }
 
 # add_tool 下载链接 工具名称
