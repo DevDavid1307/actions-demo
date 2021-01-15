@@ -6,7 +6,7 @@ import path from "path";
 export async function run(): Promise<void> {
     const version = await utils.parseVersion(core.getInput("php-version"))
 
-    await exec.exec('bash', [path.join(__dirname, "../src/scripts/install.sh"), version])
+    await exec.exec('bash', [path.join(__dirname, "../src/scripts/install.sh"), version, __dirname])
 }
 
 run()
