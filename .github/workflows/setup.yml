@@ -1,0 +1,16 @@
+name: 测试
+
+on: push
+
+jobs:
+  demo:
+    runs-on: ubuntu-20.04
+    name: 测试
+    steps:
+      - name: 拉取分支
+        uses: actions/checkout@v2
+      - name: php环境
+        uses: ./.github/actions/setup-unit-test
+        with:
+          php-version: '7.4'
+          tools: php-cs-fixer

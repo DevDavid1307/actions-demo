@@ -1,0 +1,20 @@
+name: 'Setup Unit Test'
+author: david
+description: '初始化单元测试环境'
+branding:
+  color: 'purple'
+  icon: 'play-circle'
+inputs:
+  php-version:
+    description: 'Setup PHP version.'
+    default: '7.4'
+    required: true
+  extensions:
+    description: 'Setup PHP extensions.'
+    required: false
+  tools:
+    description: 'Setup popular tools globally.'
+    required: false
+runs:
+  using: 'node12'
+  main: 'dist/index.js'

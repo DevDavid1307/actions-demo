@@ -7,15 +7,22 @@ jobs:
     runs-on: ubuntu-20.04
     name: 测试
     steps:
-      - name: 下载
+      - name: 拉取分支
         uses: actions/checkout@v2
-      - name: 测试
-        uses: shivammathur/setup-php@v2
+      - name: php环境
+        uses: ./.github/actions/setup-php
         with:
           php-version: '7.4'
-      - name: php扩展
-        run: php -m
-      - name: php版本
-        run: php -v
-      - name: php-cs-fixer版本
+          tools: php-cs-fixer
+      - name: 打印php-cs-fixer
         run: php-cs-fixer -V
+      - name: 下载php-cs-fixer
+        run: sudo curl -L https://cs.symfony.com/download/php-cs-fixer-v2.phar -o ~/php-cs-fixer
+      - name: 测试
+        run: sudo ls -l ~
+      - name: 版本
+        run: sudo chmod a+x ~/php-cs-fixer && ~/php-cs-fixer -V
+      - name: 默认的php版本
+        run: php -v
+      - name: 打印内置的php版本
+        run: sudo ls /usr/bin/php*
