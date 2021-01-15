@@ -6,9 +6,9 @@ setup() {
     if [ "$(php-config --version 2>/dev/null | cut -c 1-3)" != "$version" ]; then
             switch_version >/dev/null 2>&1
 
-            status="Switched to"
+            status="切换到"
     else
-        status="Found" # 内置版本就是需要的版本
+        status="找到内置" # 内置版本就是需要的版本
     fi
 
     # 没有找到指定的php版本
