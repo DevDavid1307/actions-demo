@@ -1184,7 +1184,7 @@ exports.run = void 0;
 const exec = __importStar(__nccwpck_require__(6));
 const utils = __importStar(__nccwpck_require__(839));
 async function run() {
-    const script = await utils.readScript("env.sh");
+    const script = await utils.readScript("install.sh");
     await exec.exec('bash', [script]);
 }
 exports.run = run;
