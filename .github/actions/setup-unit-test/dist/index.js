@@ -1575,28 +1575,25 @@ const utils = __importStar(__nccwpck_require__(839));
 const core = __importStar(__nccwpck_require__(341));
 async function run() {
     const version = await utils.parseVersion(core.getInput("php-version"));
-    const pecl = core.getInput("pecl-ext");
-    const extensions = core.getInput("extensions");
-    const tools = core.getInput("tools");
     // todo 拼装扩展、工具的安装命令
     const file_name = "install.sh";
-    let script = await utils.readScript(file_name);
-    script += await getScript();
+    const script = await utils.readScript(file_name) + await getScript();
     const install_script_path = await utils.writeScript(file_name, script);
-    console.log(install_script_path);
     const params = [
         install_script_path,
         version,
         __dirname,
-        pecl,
-        extensions,
-        tools
     ];
     await exec.exec('bash', params);
 }
 exports.run = run;
 async function getScript() {
-    return "\nadd_pecl_extension psr";
+    const pecl = core.getInput("pecl-ext");
+    const ext = core.getInput("extensions");
+    const tools = core.getInput("tools");
+    return await utils.peclScript(pecl) +
+        await utils.extScript(ext) +
+        await utils.toolsScript(tools);
 }
 exports.getScript = getScript;
 run().catch(r => console.log(r));
@@ -1628,7 +1625,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.writeScript = exports.parseVersion = exports.readScript = void 0;
+exports.toolsScript = exports.extScript = exports.peclScript = exports.writeScript = exports.parseVersion = exports.readScript = void 0;
 const fs = __importStar(__nccwpck_require__(747));
 const path = __importStar(__nccwpck_require__(622));
 const core = __importStar(__nccwpck_require__(341));
@@ -1668,6 +1665,35 @@ async function writeScript(filename, script) {
     return script_path;
 }
 exports.writeScript = writeScript;
+/**
+ * 拼装通过pecl安装扩展的命令
+ *
+ * @param pecl
+ */
+async function peclScript(pecl) {
+    return "\nadd_pecl_extension psr";
+}
+exports.peclScript = peclScript;
+/**
+ * 拼装开启扩展的命令
+ *
+ * @param ext
+ */
+async function extScript(ext) {
+    // todo 暂时不需要
+    return "";
+}
+exports.extScript = extScript;
+/**
+ * 拼装安装工具的命令
+ *
+ * @param tools
+ */
+async function toolsScript(tools) {
+    // todo 暂时不需要
+    return "\nadd_tool https://cs.symfony.com/download/php-cs-fixer-v2.phar php-cs-fixer";
+}
+exports.toolsScript = toolsScript;
 
 
 /***/ }),

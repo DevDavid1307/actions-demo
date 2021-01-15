@@ -22,7 +22,7 @@ setup() {
     semver=$(php_semver) # 具体的php版本
     ext_dir=$(php -i | grep "extension_dir => /" | sed -e "s|.*=> s*||") # 扩展目录
 
-    echo "$semver" "$ext_dir" "$pecl" "$ext" "$tools"
+    echo "$semver $ext_dir"
 
     add_log "${tick:?}" "PHP" "${status} PHP ${version}"
 }
@@ -30,11 +30,20 @@ setup() {
 # add_pecl_extension 扩展名称 版本
 add_pecl_extension() {
     step_log "通过Pecl安装扩展"
+
+    ext=$1
+
+    echo "添加扩展: $ext"
 }
 
 # add_tool 下载链接 工具名称
 add_tool() {
     step_log "添加工具"
+
+    url=$1
+    tool=$2
+
+    echo "添加工具: 链接-$url, 工具-$tool"
 }
 
 # 切换php版本
@@ -51,9 +60,6 @@ switch_version() {
 # 获取参数
 version=$1
 dist=$2
-pecl=$3
-ext=$4
-tools=$5
 
 # 加载common.sh
 . "${dist}"/../src/scripts/common.sh
