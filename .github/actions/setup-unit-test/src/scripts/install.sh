@@ -40,9 +40,10 @@ add_pecl_extension() {
 
     # 添加到php.ini
     ini_dir=$(php --ini | grep "(php.ini)" | sed -e "s|.*: s*||")
-    echo "$ini_dir"
 
-    echo "extension=$ext.so" | sudo tee -a "${ini_dir}" >/dev/null
+    sudo ls "$ini_dir"
+
+    echo "extension=$ext.so" | sudo tee -a "${ini_dir}/php.ini" >/dev/null
 
     php -m
 }
