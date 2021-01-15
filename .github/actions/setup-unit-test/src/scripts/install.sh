@@ -13,10 +13,10 @@ setup() {
 
     # 没有找到指定的php版本
     # todo 暂时不处理安装制定版本
-    if ! command -v php"$version" >/dev/null; then
-      add_log "${cross:?}" "PHP" "Could not setup PHP $version"
-      exit 1
-    fi
+#    if ! command -v php"$version" >/dev/null; then
+#      add_log "${cross:?}" "PHP" "Could not setup PHP $version"
+#      exit 1
+#    fi
 
     php -v
     add_log "${cross:?}" "${status} ${version}"
