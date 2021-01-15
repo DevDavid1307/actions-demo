@@ -60,7 +60,7 @@ add_tool() {
     fi
 
     # 下载，返回成功状态
-    status_code=$(get "-v -e" "$tool_path" "$url")
+    status_code=$(get -v -e "$tool_path" "$url")
 
     echo "$status_code"
 }
