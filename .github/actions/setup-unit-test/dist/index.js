@@ -1221,7 +1221,7 @@ exports.readScript = void 0;
 const fs = __importStar(__nccwpck_require__(747));
 const path = __importStar(__nccwpck_require__(622));
 async function readScript(filename) {
-    return fs.readFileSync(path.join(__dirname, "../src/script/" + filename), "utf8");
+    return fs.readFileSync(path.join(__dirname, "../src/scripts/" + filename), "utf8");
 }
 exports.readScript = readScript;
 
