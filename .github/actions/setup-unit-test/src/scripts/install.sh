@@ -19,7 +19,9 @@ setup() {
     fi
 
     # 配置php
-#    config
+    semver=$(php_semver)
+
+    echo "$semver"
 
     add_log "${tick:?}" "PHP" "${status} PHP ${version}"
 }

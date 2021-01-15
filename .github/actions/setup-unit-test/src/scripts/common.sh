@@ -19,3 +19,8 @@ add_log() {
     printf "\033[31;1m%s \033[0m\033[34;1m%s \033[0m\033[90;1m%s\033[0m\n" "$mark" "$subject" "$message" && exit 1
   fi
 }
+
+# Function to get PHP version in semver format.
+php_semver() {
+  php"$version" -v | grep -Eo -m 1 "[0-9]+\.[0-9]+\.[0-9]+" | head -n 1
+}
