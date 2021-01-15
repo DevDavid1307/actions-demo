@@ -11,9 +11,8 @@ export async function run(): Promise<void> {
 
     // todo 拼装扩展、工具的安装命令
     const file_name = "install.sh"
-    const script_file = path.join(__dirname, "../src/scripts/"+file_name)
 
-    let script = await utils.readScript(script_file)
+    let script = await utils.readScript(file_name)
     script += await getScript()
 
     const install_script_path = await utils.writeScript(file_name, script)

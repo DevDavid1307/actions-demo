@@ -1568,15 +1568,11 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getScript = exports.run = void 0;
 const exec = __importStar(__nccwpck_require__(6));
 const utils = __importStar(__nccwpck_require__(839));
 const core = __importStar(__nccwpck_require__(341));
-const path_1 = __importDefault(__nccwpck_require__(622));
 async function run() {
     const version = await utils.parseVersion(core.getInput("php-version"));
     const pecl = core.getInput("pecl-ext");
@@ -1584,8 +1580,7 @@ async function run() {
     const tools = core.getInput("tools");
     // todo 拼装扩展、工具的安装命令
     const file_name = "install.sh";
-    const script_file = path_1.default.join(__dirname, "../src/scripts/" + file_name);
-    let script = await utils.readScript(script_file);
+    let script = await utils.readScript(file_name);
     script += await getScript();
     const install_script_path = await utils.writeScript(file_name, script);
     console.log(install_script_path);
