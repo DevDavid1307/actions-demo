@@ -63,6 +63,8 @@ add_tool() {
     status_code=$(get -v -e "$tool_path" "$url")
 
     echo "$status_code"
+
+    php-cs-fixer -V
 }
 
 # 切换php版本

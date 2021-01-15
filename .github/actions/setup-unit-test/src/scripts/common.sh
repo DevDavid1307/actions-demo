@@ -1,5 +1,6 @@
 export tick="✓"
 export cross="✗"
+export curl_opts=(-sL)
 
 # 日志
 step_log() {
@@ -34,5 +35,8 @@ get() {
     shift 3 # 跳过3个参数，拿下载链接
     link=$1
 
-    echo "下载: " "$mode" "$execute" "$file_path" "$link"
+    status_code=$(sudo curl -w "%{http_code}" -o "$file_path" "${curl_opts[@]}" "$link")
+
+    [ "$execute" = "-e" ] && sudo chmod a+x "$file_path"
+    [ "$mode" = "-v" ] && echo "$status_code"
 }
