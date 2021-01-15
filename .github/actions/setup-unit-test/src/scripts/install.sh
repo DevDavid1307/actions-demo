@@ -18,7 +18,7 @@ setup() {
       exit 1
     fi
 
-    add_log "${tick:?}" "${status} ${version}"
+    add_log "${tick:?}" "PHP" "${status} PHP ${version}"
 }
 
 # 切换php版本
