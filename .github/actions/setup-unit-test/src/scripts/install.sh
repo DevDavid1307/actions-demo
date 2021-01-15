@@ -1,3 +1,5 @@
+tool_path_dir="/usr/local/bin"
+
 setup() {
     step_log "设置php版本"
     sudo mkdir -m 777 -p /var/run /run/php # 创建php运行时目录
@@ -25,6 +27,8 @@ setup() {
     echo "$semver $ext_dir"
 
     add_log "${tick:?}" "PHP" "${status} PHP ${version}"
+
+    php -m
 }
 
 # add_pecl_extension 扩展名称 版本
@@ -42,8 +46,23 @@ add_tool() {
 
     url=$1
     tool=$2
+    tool_path="$tool_path_dir/$tool"
 
-    echo "添加工具: 链接-$url, 工具-$tool"
+    # 添加工具目录到系统变量
+    if ! [[ "$PATH" =~ $tool_path_dir ]] ; then
+      export PATH=$PATH:"$tool_path_dir"
+      echo "export PATH=\$PATH:$tool_path_dir" | sudo tee -a "$GITHUB_ENV" >/dev/null
+    fi
+
+    # 如果存在，先删除
+    if [ ! -e "$tool_path" ]; then
+      rm -rf "$tool_path"
+    fi
+
+    # 下载，返回成功状态
+    status_code=$(get -v -e "$tool_path" "$url")
+
+    echo "$status_code"
 }
 
 # 切换php版本

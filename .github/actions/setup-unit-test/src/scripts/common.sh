@@ -24,3 +24,13 @@ add_log() {
 php_semver() {
   php"${version:?}" -v | grep -Eo -m 1 "[0-9]+\.[0-9]+\.[0-9]+" | head -n 1
 }
+
+# 下载
+# get -v -e path url
+get() {
+    mode=$1
+    execute=$2
+    file_path=$3
+
+    echo "下载: " "$mode" "$execute" "$file_path"
+}

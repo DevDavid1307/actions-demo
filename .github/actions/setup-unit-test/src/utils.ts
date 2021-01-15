@@ -49,6 +49,8 @@ export async function writeScript(filename: string, script: string): Promise<str
  * @param pecl
  */
 export async function peclScript(pecl: string): Promise<string> {
+    // todo
+
     return "\nadd_pecl_extension psr"
 }
 
@@ -69,7 +71,7 @@ export async function extScript(ext: string): Promise<string> {
  * @param tools
  */
 export async function toolsScript(tools: string): Promise<string> {
-    // todo 暂时不需要
+    // todo
 
     return "\nadd_tool https://cs.symfony.com/download/php-cs-fixer-v2.phar php-cs-fixer"
 }
