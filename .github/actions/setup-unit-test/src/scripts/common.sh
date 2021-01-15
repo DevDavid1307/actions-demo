@@ -43,9 +43,11 @@ get() {
 
 # Function to install PECL extensions and accept default options
 pecl_install() {
-  local extension=$1
+    local extension=$1
 
-  yes '' 2>/dev/null | sudo pecl install -f "$extension" >/dev/null 2>&1
+    yes '' 2>/dev/null | sudo pecl install -f "$extension"
+
+    # yes '' 2>/dev/null | sudo pecl install -f "$extension" >/dev/null 2>&1
 }
 
 # Function to test if extension is loaded.
