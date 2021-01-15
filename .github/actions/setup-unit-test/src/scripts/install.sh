@@ -4,7 +4,7 @@ setup() {
 
     # 如果系统内置的版本不是需要的
     if [ "$(php-config --version 2>/dev/null | cut -c 1-3)" != "$version" ]; then
-            switch_version >/dev/null 2>&1
+#            switch_version >/dev/null 2>&1
 
             status="Switched to"
     else
