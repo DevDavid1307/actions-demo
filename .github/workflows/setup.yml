@@ -11,5 +11,5 @@ jobs:
       - name: php环境
         uses: ./.github/actions/setup-unit-test
         with:
-          php-version: '7.4'
+          php-version: '8.0'
           tools: php-cs-fixer
