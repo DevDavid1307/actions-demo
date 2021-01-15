@@ -35,21 +35,14 @@ add_pecl_extension() {
 
     ext=$1
 
-    echo "$2=${ext_dir:?}/$1.so"
-
-    # 检测扩展和添加配置
-    if ! check_extension "$1" && [ -e "${ext_dir:?}/$1.so" ]; then
-        echo "添加配置"
-
-        echo "$2=${ext_dir:?}/$1.so" | sudo tee -a "${pecl_file:-${ini_file[@]}}" >/dev/null
-    fi
-
     # 安装
     pecl_install "$ext"
 
-    sudo ls /usr/lib/php/20190902
+    # 添加到php.ini
+    ini_dir=$(php --ini | grep "(php.ini)" | sed -e "s|.*: s*||")
+    echo "extension=${ext_dir:?}/$1.so" | sudo tee -a "${ini_dir}" >/dev/null
 
-    echo "添加扩展: $ext"
+    php -m
 }
 
 # add_tool 下载链接 工具名称
