@@ -19,9 +19,10 @@ setup() {
     fi
 
     # 配置php
-    semver=$(php_semver)
+    semver=$(php_semver) # 具体的php版本
+    ext_dir=$(php -i | grep "extension_dir => /" | sed -e "s|.*=> s*||") # 扩展目录
 
-    echo "$semver"
+    echo "$semver" "$ext_dir"
 
     add_log "${tick:?}" "PHP" "${status} PHP ${version}"
 }

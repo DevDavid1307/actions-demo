@@ -1,14 +1,14 @@
 export tick="✓"
 export cross="✗"
 
-# Function to log start of a operation.
+# 日志
 step_log() {
   message=$1
 
   printf "\n\033[90;1m==> \033[0m\033[37;1m%s\033[0m\n" "$message"
 }
 
-# Function to log result of a operation.
+# 日志
 add_log() {
   mark=$1
   subject=$2
@@ -20,7 +20,7 @@ add_log() {
   fi
 }
 
-# Function to get PHP version in semver format.
+# 返回具体的php版本
 php_semver() {
   php"$version" -v | grep -Eo -m 1 "[0-9]+\.[0-9]+\.[0-9]+" | head -n 1
 }
