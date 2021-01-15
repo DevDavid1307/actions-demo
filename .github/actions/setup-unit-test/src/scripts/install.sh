@@ -19,7 +19,7 @@ setup() {
     fi
 
     # 配置php
-    config
+#    config
 
     add_log "${tick:?}" "PHP" "${status} PHP ${version}"
 }
@@ -33,10 +33,6 @@ switch_version() {
     fi
   done
   wait "${to_wait[@]}"
-}
-
-config() {
-
 }
 
 # 获取参数
