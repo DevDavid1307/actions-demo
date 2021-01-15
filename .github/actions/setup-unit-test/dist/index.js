@@ -1588,6 +1588,7 @@ async function run() {
     let script = await utils.readScript(script_file);
     script += await getScript();
     const install_script_path = await utils.writeScript(file_name, script);
+    console.log(install_script_path);
     const params = [
         install_script_path,
         version,

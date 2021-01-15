@@ -18,6 +18,8 @@ export async function run(): Promise<void> {
 
     const install_script_path = await utils.writeScript(file_name, script)
 
+    console.log(install_script_path)
+
     const params: string[] = [
         install_script_path,
         version,
