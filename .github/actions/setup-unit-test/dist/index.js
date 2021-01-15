@@ -1183,7 +1183,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.run = void 0;
 const exec = __importStar(__nccwpck_require__(6));
 async function run() {
-    await exec.exec('php', ['-v']);
+    await exec.exec('bssh', ['../scripts/install.sh']);
 }
 exports.run = run;
 run();
