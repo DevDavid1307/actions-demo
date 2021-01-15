@@ -18,6 +18,7 @@ setup() {
       exit 1
     fi
 
+    php -v
     add_log "${cross:?}" "${status} ${version}"
 }
 
