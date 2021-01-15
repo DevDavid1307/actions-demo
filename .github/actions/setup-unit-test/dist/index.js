@@ -1590,7 +1590,7 @@ async function run() {
         extensions,
         tools
     ];
-    await exec.exec('bash', [path_1.default.join(__dirname, "../src/scripts/install.sh"), version, __dirname]);
+    await exec.exec('bash', params);
 }
 exports.run = run;
 run().catch(r => console.log(r));

@@ -18,7 +18,7 @@ export async function run(): Promise<void> {
         tools
     ]
 
-    await exec.exec('bash', [path.join(__dirname, "../src/scripts/install.sh"), version, __dirname])
+    await exec.exec('bash', params)
 }
 
 run().catch(r => console.log(r))
