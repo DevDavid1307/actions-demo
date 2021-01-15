@@ -48,6 +48,8 @@ add_pecl_extension() {
     # 安装
     pecl_install "$ext-$version"
 
+    sudo ls /usr/lib/php/20190902
+
     echo "添加扩展: $ext"
 }
 
