@@ -4,7 +4,7 @@ setup() {
 
     # 如果系统内置的版本不是需要的
     if [ "$(php-config --version 2>/dev/null | cut -c 1-3)" != "$version" ]; then
-#            switch_version >/dev/null 2>&1
+            switch_version >/dev/null 2>&1
 
             status="Switched to"
     else
@@ -13,13 +13,12 @@ setup() {
 
     # 没有找到指定的php版本
     # todo 暂时不处理安装制定版本
-#    if ! command -v php"$version" >/dev/null; then
-#      add_log "${cross:?}" "PHP" "Could not setup PHP $version"
-#      exit 1
-#    fi
+    if ! command -v php"$version" >/dev/null; then
+      add_log "${cross:?}" "PHP" "Could not setup PHP $version"
+      exit 1
+    fi
 
-    php -v
-    add_log "${cross:?}" "${status} ${version}"
+    add_log "${tick:?}" "${status} ${version}"
 }
 
 # 切换php版本
