@@ -1,1 +1,5 @@
-php -v
+setup() {
+   php -v
+}
+
+setup
