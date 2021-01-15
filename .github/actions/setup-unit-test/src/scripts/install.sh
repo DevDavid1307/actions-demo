@@ -34,7 +34,6 @@ add_pecl_extension() {
     step_log "通过Pecl安装扩展"
 
     ext=$1
-    version=$2
 
     echo "$2=${ext_dir:?}/$1.so"
 
@@ -46,7 +45,7 @@ add_pecl_extension() {
     fi
 
     # 安装
-    pecl_install "$ext-$version"
+    pecl_install "$ext"
 
     sudo ls /usr/lib/php/20190902
 
