@@ -32,7 +32,7 @@ get() {
     execute=$2
     file_path=$3
     shift 3 # 跳过3个参数，拿下载链接
-    link=$#
+    link=$1
 
     echo "下载: " "$mode" "$execute" "$file_path" "$link"
 }
