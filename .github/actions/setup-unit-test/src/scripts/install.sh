@@ -62,9 +62,12 @@ add_tool() {
     # 下载，返回成功状态
     status_code=$(get -v -e "$tool_path" "$url")
 
-    echo "$status_code"
+    # 安装失败
+    if [ "$status_code" != "200" ]; then
+        add_log "$cross" "$tool" "安装失败"
+    fi
 
-    php-cs-fixer -V
+    add_log "$tick" "$tool" "安装成功"
 }
 
 # 切换php版本
