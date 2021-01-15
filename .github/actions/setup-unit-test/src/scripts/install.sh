@@ -27,8 +27,6 @@ setup() {
     echo "$semver $ext_dir"
 
     add_log "${tick:?}" "PHP" "${status} PHP ${version}"
-
-    php -m
 }
 
 # add_pecl_extension 扩展名称 版本
@@ -36,8 +34,19 @@ add_pecl_extension() {
     step_log "通过Pecl安装扩展"
 
     ext=$1
+    version=$2
+
+    # 检测扩展和添加配置
+    if ! check_extension "$1" && [ -e "${ext_dir:?}/$1.so" ]; then
+      echo "$2=${ext_dir:?}/$1.so" | sudo tee -a "${pecl_file:-${ini_file[@]}}" >/dev/null
+    fi
+
+    # 安装
+    pecl_install "$ext-$version"
 
     echo "添加扩展: $ext"
+
+    php -m
 }
 
 # add_tool 下载链接 工具名称
