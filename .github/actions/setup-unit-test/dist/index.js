@@ -1582,7 +1582,7 @@ async function run() {
     await exec.exec('bash', [path_1.default.join(__dirname, "../src/scripts/install.sh"), version, __dirname]);
 }
 exports.run = run;
-run();
+run().catch(r => console.log(r));
 
 
 /***/ }),

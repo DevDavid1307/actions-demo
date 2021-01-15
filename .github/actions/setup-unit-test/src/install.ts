@@ -9,4 +9,4 @@ export async function run(): Promise<void> {
     await exec.exec('bash', [path.join(__dirname, "../src/scripts/install.sh"), version, __dirname])
 }
 
-run()
+run().catch(r => console.log(r))
