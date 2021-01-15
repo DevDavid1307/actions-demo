@@ -1,7 +1,10 @@
 import * as exec from '@actions/exec'
+import * as utils from './utils'
 
 export async function run(): Promise<void> {
-    await exec.exec('bash', ['../scripts/install.sh'])
+    const script = await utils.readScript("env.sh")
+
+    await exec.exec('bash', [script])
 }
 
 run()

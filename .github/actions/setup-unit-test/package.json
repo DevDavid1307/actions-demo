@@ -4,15 +4,16 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-      "test": "echo \"Error: no test specified\" && exit 1",
-      "ncc": "ncc build ./src/install.ts --license licenses.txt"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "ncc": "ncc build ./src/install.ts --license licenses.txt"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@actions/core": "^1.2.6",
-    "@actions/exec": "^1.0.4"
+    "@actions/exec": "^1.0.4",
+    "fs": "0.0.1-security"
   },
   "devDependencies": {
     "@types/node": "^14.14.21",
