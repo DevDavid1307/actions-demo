@@ -9,7 +9,7 @@ jobs:
       - name: 拉取分支
         uses: actions/checkout@v2
       - name: 测试Context
-        run: echo ${{ github.actor }}
+        run: echo ${{ toJson(github) }}
 #      - name: php环境
 #        uses: ./.github/actions/setup-unit-test
 #        with:
