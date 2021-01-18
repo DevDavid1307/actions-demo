@@ -1,6 +1,7 @@
 import * as exec from '@actions/exec'
 import * as utils from './utils'
 import * as core from '@actions/core'
+import * as github from '@actions/github'
 
 export async function run(): Promise<void> {
     const version = await utils.parseVersion(core.getInput("php-version"))

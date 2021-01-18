@@ -8,7 +8,9 @@ jobs:
     steps:
       - name: 拉取分支
         uses: actions/checkout@v2
-      - name: php环境
-        uses: ./.github/actions/setup-unit-test
-        with:
-          tools: php-cs-fixer
+      - name: 测试Context
+        run: echo ${{ github.actor }}
+#      - name: php环境
+#        uses: ./.github/actions/setup-unit-test
+#        with:
+#          tools: php-cs-fixer
